@@ -8,9 +8,9 @@ spring:
 
   # ---- Database Configuration ----
   datasource:
-    url: jdbc:mysql://localhost:3306/aftersales_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: root
-    password: password
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/aftersales_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true}
+    username: ${SPRING_DATASOURCE_USERNAME:root}
+    password: ${SPRING_DATASOURCE_PASSWORD:password}
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       pool-name: AftersalesHikariPool
@@ -23,7 +23,7 @@ spring:
   # ---- JPA / Hibernate Configuration ----
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:validate}
     show-sql: false
     open-in-view: false
     properties:
