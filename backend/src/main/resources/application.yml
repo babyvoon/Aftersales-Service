@@ -1,0 +1,57 @@
+# =============================================================
+# Aftersales Service Dashboard - Application Configuration
+# =============================================================
+
+spring:
+  application:
+    name: aftersales-dashboard
+
+  # ---- Database Configuration ----
+  datasource:
+    url: jdbc:mysql://localhost:3306/aftersales_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: password
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      pool-name: AftersalesHikariPool
+      maximum-pool-size: 10
+      minimum-idle: 5
+      idle-timeout: 30000
+      max-lifetime: 1800000
+      connection-timeout: 20000
+
+  # ---- JPA / Hibernate Configuration ----
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+# ---- Server Configuration ----
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# ---- JWT Configuration ----
+app:
+  jwt:
+    secret: af7e3b1c9d4f8a2e6b0c5d7f1a3e9b2c4d6f8a0e2c4b6d8f0a1c3e5b7d9f1a3
+    expiration-ms: 86400000      # 24 hours
+    refresh-expiration-ms: 604800000  # 7 days
+
+# ---- Logging ----
+logging:
+  level:
+    com.aftersales: DEBUG
+    org.springframework.security: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
