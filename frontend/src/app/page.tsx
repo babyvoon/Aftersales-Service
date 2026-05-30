@@ -766,7 +766,7 @@ export default function Page() {
                 <i style={{ '--clr': '#ff0057' } as React.CSSProperties}></i>
                 <i style={{ '--clr': '#fffd44' } as React.CSSProperties}></i>
                 <div className="header-logo-content">
-                  <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
+                  <img src="/logo.png" alt="Logo" className="w-full h-full object-contain" />
                 </div>
               </div>
             </div>
