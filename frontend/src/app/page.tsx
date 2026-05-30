@@ -766,7 +766,7 @@ export default function Page() {
                 <i style={{ '--clr': '#ff0057' } as React.CSSProperties}></i>
                 <i style={{ '--clr': '#fffd44' } as React.CSSProperties}></i>
                 <div className="header-logo-content">
-                  <Wrench className="h-6 w-6" />
+                  <img src="/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
                 </div>
               </div>
             </div>
