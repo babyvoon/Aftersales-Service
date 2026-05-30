@@ -329,7 +329,6 @@ export default function Page() {
   const [tickets, setTickets] = useState<ServiceTicket[]>(INITIAL_TICKETS);
   const [partsCatalog, setPartsCatalog] = useState<SparePart[]>(INITIAL_PARTS_CATALOG);
   const [selectedTicket, setSelectedTicket] = useState<ServiceTicket | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   
   // Create ticket state
   const [isCreating, setIsCreating] = useState(false);
@@ -352,7 +351,6 @@ export default function Page() {
       router.push('/login');
     } else {
       setCurrentRole(savedRole);
-      setIsLoading(false);
     }
     
     if (savedLang) {
@@ -730,18 +728,21 @@ export default function Page() {
     setNewLaborCost(80);
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-slate-400 font-semibold animate-pulse text-lg tracking-wider">
-          LOADING SYSTEM...
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="dashboard-container min-h-screen bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            (function() {
+              try {
+                if (!sessionStorage.getItem('simulated_role')) {
+                  window.location.replace('/login');
+                }
+              } catch (e) {}
+            })();
+          `,
+        }}
+      />
       
       {/* Ambient glowing circles in background */}
       <div className="dashboard-ambient-rings">
