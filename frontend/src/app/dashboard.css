@@ -1,0 +1,299 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap");
+
+/* Global Dashboard Theme Setup */
+.dashboard-container {
+  font-family: "Quicksand", sans-serif;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+.dashboard-container * {
+  font-family: "Quicksand", sans-serif;
+}
+
+/* Animations */
+@keyframes dashboard-ring-animate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dashboard-ring-animate2 {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+/* Enlarge & Style Logo spinning ring like Login ring */
+.header-logo-ring-wrapper {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo-ring {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.header-logo-ring i {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(37, 99, 235, 0.15); /* blue glow */
+  transition: 0.5s;
+}
+
+.header-logo-ring i:nth-of-type(1) {
+  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+  animation: dashboard-ring-animate 6s linear infinite;
+}
+
+.header-logo-ring i:nth-of-type(2) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: dashboard-ring-animate 4s linear infinite;
+}
+
+.header-logo-ring i:nth-of-type(3) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: dashboard-ring-animate2 10s linear infinite;
+}
+
+.header-logo-ring:hover i {
+  border: 4px solid var(--clr);
+  filter: drop-shadow(0 0 15px var(--clr));
+}
+
+.header-logo-content {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  background: #2563eb; /* blue-600 */
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+  color: white;
+  z-index: 10;
+}
+
+/* Ambient floating background rings */
+.dashboard-ambient-rings {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.dashboard-ambient-ring-1 {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  top: -150px;
+  right: -150px;
+  opacity: 0.03;
+  transition: opacity 0.5s, filter 0.5s;
+}
+
+.dashboard-ambient-ring-2 {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  bottom: -150px;
+  left: -150px;
+  opacity: 0.03;
+  transition: opacity 0.5s, filter 0.5s;
+}
+
+.dark .dashboard-ambient-ring-1 {
+  opacity: 0.07;
+}
+
+.dark .dashboard-ambient-ring-2 {
+  opacity: 0.07;
+}
+
+.dashboard-ambient-ring-1 i,
+.dashboard-ambient-ring-2 i {
+  position: absolute;
+  inset: 0;
+  border: 3px solid var(--clr);
+}
+
+.dashboard-ambient-ring-1 i:nth-of-type(1),
+.dashboard-ambient-ring-2 i:nth-of-type(1) {
+  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+  animation: dashboard-ring-animate 16s linear infinite;
+}
+
+.dashboard-ambient-ring-1 i:nth-of-type(2),
+.dashboard-ambient-ring-2 i:nth-of-type(2) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: dashboard-ring-animate 12s linear infinite;
+}
+
+.dashboard-ambient-ring-1 i:nth-of-type(3),
+.dashboard-ambient-ring-2 i:nth-of-type(3) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: dashboard-ring-animate2 24s linear infinite;
+}
+
+/* Premium Card Glow Adjustments */
+.glowing-card {
+  position: relative;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1.25rem !important; /* 20px */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(226, 232, 240, 0.7) !important;
+  z-index: 1;
+}
+
+.dark .glowing-card {
+  background: rgba(15, 23, 42, 0.55);
+  border: 1.5px solid rgba(30, 41, 59, 0.7) !important;
+}
+
+.glowing-card:hover {
+  transform: translateY(-4px);
+}
+
+.glowing-card-blue:hover {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 0 15px rgba(59, 130, 246, 0.12);
+}
+
+.glowing-card-slate:hover {
+  border-color: #64748b !important;
+  box-shadow: 0 10px 25px -5px rgba(100, 116, 139, 0.15), 0 0 15px rgba(100, 116, 139, 0.12);
+}
+
+.glowing-card-emerald:hover {
+  border-color: #10b981 !important;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15), 0 0 15px rgba(16, 185, 129, 0.12);
+}
+
+.glowing-card-amber:hover {
+  border-color: #f59e0b !important;
+  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.15), 0 0 15px rgba(245, 158, 11, 0.12);
+}
+
+/* Kanban Board & Columns styling */
+.kanban-board-wrapper {
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(8px);
+}
+
+.dark .kanban-board-wrapper {
+  background: rgba(10, 15, 30, 0.8) !important;
+}
+
+/* Input boxes styled like login page */
+.login-style-input {
+  border-radius: 40px !important;
+  padding: 10px 18px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2.5px solid #e2e8f0 !important;
+  font-size: 1.1em !important;
+  color: #0f172a !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.01) !important;
+  outline: none !important;
+  transition: all 0.3s !important;
+}
+
+.dark .login-style-input {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 2.5px solid #334155 !important;
+  color: #f8fafc !important;
+}
+
+.login-style-input:focus {
+  border-color: #64748b !important;
+  background: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+.dark .login-style-input:focus {
+  border-color: #94a3b8 !important;
+  background: #1e293b !important;
+}
+
+.login-style-textarea {
+  border-radius: 22px !important;
+  padding: 12px 18px !important;
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 2.5px solid #e2e8f0 !important;
+  font-size: 1.1em !important;
+  color: #0f172a !important;
+  outline: none !important;
+  transition: all 0.3s !important;
+}
+
+.dark .login-style-textarea {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border: 2.5px solid #334155 !important;
+  color: #f8fafc !important;
+}
+
+.login-style-textarea:focus {
+  border-color: #64748b !important;
+  background: #ffffff !important;
+}
+
+.dark .login-style-textarea:focus {
+  border-color: #94a3b8 !important;
+  background: #1e293b !important;
+}
+
+/* Gradient and customized buttons */
+.login-style-submit {
+  background: linear-gradient(45deg, #ff357a, #fff172) !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: #111 !important;
+  font-weight: 700 !important;
+  font-size: 1.1em !important;
+  border-radius: 40px !important;
+  transition: all 0.3s !important;
+  box-shadow: 0 4px 15px rgba(255, 53, 122, 0.2) !important;
+  padding: 10px 24px !important;
+}
+
+.login-style-submit:hover {
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 6px 20px rgba(255, 53, 122, 0.3) !important;
+}
+
+.login-style-cancel {
+  border-radius: 40px !important;
+  border: 2.5px solid #cbd5e1 !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 1.1em !important;
+}
+
+.dark .login-style-cancel {
+  border-color: #334155 !important;
+}
+
+/* Dragging visual adjustments */
+.ticket-drag-hover {
+  box-shadow: 0 0 15px var(--column-clr) !important;
+  border: 2px dashed var(--column-clr) !important;
+  transform: scale(1.02);
+}

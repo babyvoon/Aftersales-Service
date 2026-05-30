@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;700&display=swap");
+
+.login-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8fafc;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+.login-page-container * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Quicksand", sans-serif;
+}
+
+.login-page-container .login-ring {
+  position: relative;
+  width: 500px;
+  height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-page-container .login-ring i {
+  position: absolute;
+  inset: 0;
+  border: 2px solid rgba(15, 23, 42, 0.12);
+  transition: 0.5s;
+}
+
+.login-page-container .login-ring i:nth-of-type(1) {
+  border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
+  animation: login-animate 6s linear infinite;
+}
+
+.login-page-container .login-ring i:nth-of-type(2) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: login-animate 4s linear infinite;
+}
+
+.login-page-container .login-ring i:nth-of-type(3) {
+  border-radius: 41% 44% 56% 59% / 38% 62% 63% 37%;
+  animation: login-animate2 10s linear infinite;
+}
+
+.login-page-container .login-ring:hover i {
+  border: 6px solid var(--clr);
+  filter: drop-shadow(0 0 20px var(--clr));
+}
+
+@keyframes login-animate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes login-animate2 {
+  0% {
+    transform: rotate(360deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.login-page-container .login {
+  position: absolute;
+  width: 300px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-page-container .login h2 {
+  font-size: 2em;
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.login-page-container .login .inputBx {
+  position: relative;
+  width: 100%;
+}
+
+.login-page-container .login .inputBx input {
+  position: relative;
+  width: 100%;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #cbd5e1;
+  border-radius: 40px;
+  font-size: 1.2em;
+  color: #0f172a;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  outline: none;
+  transition: all 0.3s;
+}
+
+.login-page-container .login .inputBx input:focus {
+  border-color: #64748b;
+  background: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.login-page-container .login .inputBx input[type="submit"] {
+  width: 100%;
+  background: linear-gradient(45deg, #ff357a, #fff172);
+  border: none;
+  cursor: pointer;
+  color: #111;
+  font-weight: 700;
+  font-size: 1.2em;
+  box-shadow: 0 4px 15px rgba(255, 53, 122, 0.2);
+}
+
+.login-page-container .login .inputBx input[type="submit"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(255, 53, 122, 0.3);
+}
+
+.login-page-container .login .inputBx input::placeholder {
+  color: rgba(15, 23, 42, 0.45);
+}
+
+.login-page-container .login .links {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.login-page-container .login .links a {
+  color: #475569;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.login-page-container .login .links a:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+/* Error Message styling */
+.login-page-container .error-msg {
+  color: #ff357a;
+  font-size: 0.85em;
+  text-align: center;
+  margin-top: -5px;
+  font-weight: 500;
+}
+
+/* User help guide styling */
+.login-page-container .help-guide {
+  position: absolute;
+  bottom: 20px;
+  color: rgba(15, 23, 42, 0.45);
+  font-size: 0.8em;
+  text-align: center;
+  line-height: 1.5;
+  pointer-events: none;
+}
+
+/* Quick test role buttons styling */
+.login-page-container .quick-roles-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.login-page-container .quick-roles-container p {
+  color: rgba(15, 23, 42, 0.45);
+  font-size: 0.75em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.login-page-container .quick-roles {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  justify-content: center;
+}
+
+.login-page-container .quick-roles button {
+  background: transparent;
+  border: 1px solid rgba(15, 23, 42, 0.15);
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: #475569;
+  font-size: 0.8em;
+  cursor: pointer;
+  transition: all 0.3s;
+  outline: none;
+  font-weight: 500;
+}
+
+.login-page-container .quick-roles button:hover {
+  border-color: var(--role-clr);
+  background: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 10px var(--role-clr);
+  text-shadow: 0 0 5px var(--role-clr);
+  color: #fff;
+}
