@@ -251,8 +251,8 @@ const TRANSLATIONS = {
     placeholderName: "Jane Doe",
     placeholderPhone: "+1 (555) 0180",
     placeholderPlate: "NY-8822",
-    placeholderBrand: "Toyota",
-    placeholderModel: "RAV4",
+    placeholderBrand: "Isuzu",
+    placeholderModel: "D-Max",
     placeholderDesc: "Oil change and checking squeaking sounds under steering wheel column...",
     
     // Tooltips
@@ -311,8 +311,8 @@ const TRANSLATIONS = {
     placeholderName: "สมชาย ดีใจ",
     placeholderPhone: "081-234-5678",
     placeholderPlate: "กข-1234",
-    placeholderBrand: "โตโยต้า",
-    placeholderModel: "ยาริส",
+    placeholderBrand: "อีซูซุ",
+    placeholderModel: "ดีแม็ก",
     placeholderDesc: "เปลี่ยนถ่ายน้ำมันเครื่อง และตรวจเช็กเสียงดังเวลากดเบรก...",
     
     // Tooltips
