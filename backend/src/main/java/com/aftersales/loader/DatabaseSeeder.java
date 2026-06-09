@@ -62,19 +62,19 @@ public class DatabaseSeeder implements CommandLineRunner {
             Customer c12 = getOrCreateCustomer("Loki Laufeyson", "+1-555-0866", "loki@example.com", "Asgard");
 
             // Seed Vehicles
-            Vehicle v1 = getOrCreateVehicle(c1, "ABC-1234", "VIN10000000000001", "Toyota", "Camry", 2020);
-            Vehicle v2 = getOrCreateVehicle(c2, "XYZ-9876", "VIN10000000000002", "Honda", "Civic", 2018);
-            Vehicle v3 = getOrCreateVehicle(c3, "BAT-1100", "VIN10000000000003", "Ford", "Explorer", 2017);
-            Vehicle v4 = getOrCreateVehicle(c4, "ENG-5544", "VIN10000000000004", "BMW", "330i", 2021);
-            Vehicle v5 = getOrCreateVehicle(c5, "WIP-3322", "VIN10000000000005", "Mazda", "CX-5", 2019);
-            Vehicle v6 = getOrCreateVehicle(c6, "SPIDER-1", "VIN10000000000006", "Toyota", "Corolla", 2015);
-            Vehicle v7 = getOrCreateVehicle(c7, "SUPER-99", "VIN10000000000007", "Chevrolet", "Corvette", 2022);
-            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Jeep", "Wrangler", 2016);
-            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Audi", "R8", 2020);
-            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Tesla", "Model S", 2023);
-            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Porsche", "911", 2021);
-            Vehicle v12 = getOrCreateVehicle(c11, "WITCH-7", "VIN10000000000012", "Volvo", "XC90", 2019);
-            Vehicle v13 = getOrCreateVehicle(c12, "MISCHIEF", "VIN10000000000013", "Dodge", "Charger", 2018);
+            Vehicle v1 = getOrCreateVehicle(c1, "ABC-1234", "VIN10000000000001", "Isuzu", "Camry", 2020);
+            Vehicle v2 = getOrCreateVehicle(c2, "XYZ-9876", "VIN10000000000002", "Isuzu", "Civic", 2018);
+            Vehicle v3 = getOrCreateVehicle(c3, "BAT-1100", "VIN10000000000003", "Isuzu", "Explorer", 2017);
+            Vehicle v4 = getOrCreateVehicle(c4, "ENG-5544", "VIN10000000000004", "Isuzu", "330i", 2021);
+            Vehicle v5 = getOrCreateVehicle(c5, "WIP-3322", "VIN10000000000005", "Isuzu", "CX-5", 2019);
+            Vehicle v6 = getOrCreateVehicle(c6, "SPIDER-1", "VIN10000000000006", "Isuzu", "Corolla", 2015);
+            Vehicle v7 = getOrCreateVehicle(c7, "SUPER-99", "VIN10000000000007", "Isuzu", "Corvette", 2022);
+            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Isuzu", "Wrangler", 2016);
+            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Isuzu", "R8", 2020);
+            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Isuzu", "Model S", 2023);
+            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Isuzu", "911", 2021);
+            Vehicle v12 = getOrCreateVehicle(c11, "WITCH-7", "VIN10000000000012", "Isuzu", "XC90", 2019);
+            Vehicle v13 = getOrCreateVehicle(c12, "MISCHIEF", "VIN10000000000013", "Isuzu", "Charger", 2018);
 
             // Seed Tickets
             ServiceTicket t1 = ServiceTicket.builder()
@@ -264,16 +264,23 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     private Vehicle getOrCreateVehicle(Customer customer, String licensePlate, String vinNumber, String brand, String model, int year) {
-        return vehicleRepository.findByLicensePlate(licensePlate)
-                .orElseGet(() -> vehicleRepository.save(
-                        Vehicle.builder()
-                                .customer(customer)
-                                .licensePlate(licensePlate)
-                                .vinNumber(vinNumber)
-                                .brand(brand)
-                                .model(model)
-                                .year(year)
-                                .build()
-                ));
+        Vehicle vehicle = vehicleRepository.findByLicensePlate(licensePlate).orElse(null);
+        if (vehicle != null) {
+            if (!vehicle.getBrand().equalsIgnoreCase(brand)) {
+                vehicle.setBrand(brand);
+                vehicleRepository.save(vehicle);
+            }
+            return vehicle;
+        }
+        return vehicleRepository.save(
+                Vehicle.builder()
+                        .customer(customer)
+                        .licensePlate(licensePlate)
+                        .vinNumber(vinNumber)
+                        .brand(brand)
+                        .model(model)
+                        .year(year)
+                        .build()
+        );
     }
 }
