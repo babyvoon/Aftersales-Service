@@ -34,7 +34,7 @@ const TRANSLATIONS = {
     vehId: "Vehicle ID",
     issueDesc: "Issue Description",
     assignedMech: "Assigned Mechanic",
-    laborCost: "Labor Cost ($)",
+    laborCost: "Labor Cost (฿)",
     unassigned: "Unassigned",
     saveSuccess: "Changes Saved!",
     saveDetails: "Save Details",
@@ -72,7 +72,7 @@ const TRANSLATIONS = {
     vehId: "รหัสรถยนต์",
     issueDesc: "คำอธิบายอาการเสีย / งานซ่อมบำรุง",
     assignedMech: "ช่างเทคนิคผู้ดูแลงาน",
-    laborCost: "ค่าบริการค่าแรงช่าง ($)",
+    laborCost: "ค่าบริการค่าแรงช่าง (฿)",
     unassigned: "ยังไม่มอบหมาย",
     saveSuccess: "บันทึกข้อมูลสำเร็จ!",
     saveDetails: "บันทึกข้อมูลบิล",
@@ -429,7 +429,7 @@ export default function TicketDetailModal({
                       >
                         {partsCatalog.map((part) => (
                           <option key={part.id} value={part.id}>
-                            {part.name} ({part.partNumber}) — ${part.unitPrice.toFixed(2)} (Qty: {part.stockQuantity})
+                            {part.name} ({part.partNumber}) — ฿{part.unitPrice.toFixed(2)} (Qty: {part.stockQuantity})
                           </option>
                         ))}
                       </select>
@@ -497,10 +497,10 @@ export default function TicketDetailModal({
                             {item.quantity}
                           </td>
                           <td className="p-3 text-right text-slate-600 dark:text-slate-300">
-                            ${item.pricePerUnit.toFixed(2)}
+                            ฿{item.pricePerUnit.toFixed(2)}
                           </td>
                           <td className="p-3 text-right font-semibold text-slate-700 dark:text-slate-200">
-                            ${item.subtotal.toFixed(2)}
+                            ฿{item.subtotal.toFixed(2)}
                           </td>
                           {!isReadOnly && (
                             <td className="p-3 text-center">
@@ -542,25 +542,25 @@ export default function TicketDetailModal({
                 <div className="space-y-1.5 py-2">
                   <div className="flex justify-between">
                     <span>{t.laborCostReceipt}</span>
-                    <span>${ticket.laborCost.toFixed(2)}</span>
+                    <span>฿{ticket.laborCost.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>{t.partsMaterials}</span>
-                    <span>${ticket.partsTotal.toFixed(2)}</span>
+                    <span>฿{ticket.partsTotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between font-bold text-slate-800 dark:text-slate-200 border-t border-slate-105 pt-1.5 dark:border-slate-900">
                     <span>{t.subtotalReceipt}</span>
-                    <span>${ticket.subtotal.toFixed(2)}</span>
+                    <span>฿{ticket.subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-[11px] text-slate-400">
                     <span>{t.vatAmount}</span>
-                    <span>${ticket.vatAmount.toFixed(2)}</span>
+                    <span>฿{ticket.vatAmount.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <div className="flex justify-between border-t-2 border-double border-slate-300 pt-2 text-sm font-bold text-slate-800 dark:border-slate-700 dark:text-white">
                   <span>{t.totalBill}</span>
-                  <span>${ticket.totalWithVat.toFixed(2)}</span>
+                  <span>฿{ticket.totalWithVat.toFixed(2)}</span>
                 </div>
               </div>
             </div>

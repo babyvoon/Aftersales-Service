@@ -59,7 +59,7 @@ const TRANSLATIONS = {
     year: "Year",
     serviceCosts: "3. Service & Costs",
     serviceDesc: "Diagnostic / Service Description",
-    laborCost: "Initial Labor Cost ($)",
+    laborCost: "Initial Labor Cost (฿)",
     cancel: "Cancel",
     confirmIntake: "Confirm Intake",
     
@@ -119,7 +119,7 @@ const TRANSLATIONS = {
     year: "ปีผลิต (ค.ศ.)",
     serviceCosts: "3. รายละเอียดงานซ่อมและค่าบริการ",
     serviceDesc: "อาการเสีย / ขอบเขตงานประเมินซ่อมบำรุง",
-    laborCost: "ประมาณการค่าบริการค่าแรงเริ่มต้น ($)",
+    laborCost: "ประมาณการค่าบริการค่าแรงเริ่มต้น (฿)",
     cancel: "ยกเลิก",
     confirmIntake: "ยืนยันรับรถเข้าซ่อม",
     
@@ -276,12 +276,12 @@ export default function Page() {
 
     const headers = language === 'TH' ? [
       'ID ใบงาน', 'ชื่อลูกค้า', 'เบอร์โทรศัพท์', 'ทะเบียนรถ', 'ยี่ห้อ', 'รุ่น', 'ปีผลิต', 
-      'รายละเอียดอาการเสีย', 'ช่างผู้ดูแล', 'ขั้นตอนสถานะ', 'ค่าแรง ($)', 'ค่าอะไหล่ ($)', 
-      'ยอดรวมก่อน VAT ($)', 'ภาษี VAT 7% ($)', 'ยอดชำระสุทธิ ($)', 'วันที่เปิดใบงาน'
+      'รายละเอียดอาการเสีย', 'ช่างผู้ดูแล', 'ขั้นตอนสถานะ', 'ค่าแรง (฿)', 'ค่าอะไหล่ (฿)', 
+      'ยอดรวมก่อน VAT (฿)', 'ภาษี VAT 7% (฿)', 'ยอดชำระสุทธิ (฿)', 'วันที่เปิดใบงาน'
     ] : [
       'Ticket ID', 'Customer Name', 'Phone', 'License Plate', 'Brand', 'Model', 'Year', 
-      'Description', 'Assigned Mechanic', 'Status', 'Labor Cost ($)', 'Parts Total ($)', 
-      'Subtotal ($)', 'VAT Amount ($)', 'Total Bill ($)', 'Created At'
+      'Description', 'Assigned Mechanic', 'Status', 'Labor Cost (฿)', 'Parts Total (฿)', 
+      'Subtotal (฿)', 'VAT Amount (฿)', 'Total Bill (฿)', 'Created At'
     ];
 
     const getStatusText = (status: TicketStatus) => {
@@ -350,11 +350,11 @@ export default function Page() {
           <td class="text-left" style="font-size: 9.5pt; color: #475569;">${getCleanString(ticket.description)}</td>
           <td class="text-left" style="font-weight: 500;">${getCleanString(mechName)}</td>
           <td style="${statusStyle}">${getCleanString(statusText)}</td>
-          <td class="text-right" style="color: #0f172a;">$${ticket.laborCost.toFixed(2)}</td>
-          <td class="text-right" style="color: #0f172a;">$${ticket.partsTotal.toFixed(2)}</td>
-          <td class="text-right" style="color: #0f172a; font-weight: 500;">$${ticket.subtotal.toFixed(2)}</td>
-          <td class="text-right" style="color: #64748b;">$${ticket.vatAmount.toFixed(2)}</td>
-          <td class="text-right" style="color: #10b981; font-weight: bold;">$${ticket.totalWithVat.toFixed(2)}</td>
+          <td class="text-right" style="color: #0f172a;">฿${ticket.laborCost.toFixed(2)}</td>
+          <td class="text-right" style="color: #0f172a;">฿${ticket.partsTotal.toFixed(2)}</td>
+          <td class="text-right" style="color: #0f172a; font-weight: 500;">฿${ticket.subtotal.toFixed(2)}</td>
+          <td class="text-right" style="color: #64748b;">฿${ticket.vatAmount.toFixed(2)}</td>
+          <td class="text-right" style="color: #10b981; font-weight: bold;">฿${ticket.totalWithVat.toFixed(2)}</td>
           <td class="text-center" style="color: #64748b; font-size: 9.5pt;">${formattedDate}</td>
         </tr>
       `;
@@ -429,12 +429,12 @@ export default function Page() {
             ${rowsHtml}
             
             <tr class="total-row">
-              <td colspan="10" class="text-right" style="padding-right: 15px;"><b>${totalLabel} (USD):</b></td>
-              <td class="text-right">$${totalLabor.toFixed(2)}</td>
-              <td class="text-right">$${totalParts.toFixed(2)}</td>
-              <td class="text-right">$${totalSubtotal.toFixed(2)}</td>
-              <td class="text-right" style="color: #64748b;">$${totalVat.toFixed(2)}</td>
-              <td class="text-right" style="color: #10b981;">$${totalBillVal.toFixed(2)}</td>
+              <td colspan="10" class="text-right" style="padding-right: 15px;"><b>${totalLabel} (THB):</b></td>
+              <td class="text-right">฿${totalLabor.toFixed(2)}</td>
+              <td class="text-right">฿${totalParts.toFixed(2)}</td>
+              <td class="text-right">฿${totalSubtotal.toFixed(2)}</td>
+              <td class="text-right" style="color: #64748b;">฿${totalVat.toFixed(2)}</td>
+              <td class="text-right" style="color: #10b981;">฿${totalBillVal.toFixed(2)}</td>
               <td></td>
             </tr>
           </tbody>
@@ -775,7 +775,7 @@ export default function Page() {
           <div className="glowing-card glowing-card-emerald p-4 flex items-center justify-between group transition duration-200">
             <div className="space-y-1">
               <p className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{t.completedRevenue}</p>
-              <h3 className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">${metrics.revenue.toFixed(2)}</h3>
+              <h3 className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">฿{metrics.revenue.toFixed(2)}</h3>
               <p className="text-[10px] text-slate-500 dark:text-slate-400">{t.sumSettled}</p>
             </div>
             <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition duration-200">
