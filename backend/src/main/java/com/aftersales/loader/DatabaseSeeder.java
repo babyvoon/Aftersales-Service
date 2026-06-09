@@ -314,6 +314,67 @@ public class DatabaseSeeder implements CommandLineRunner {
                 ticketRepository.save(t19);
                 log.info("Seeded pending ticket t19.");
             }
+
+            // Seed another 4 PENDING tickets (t20 - t23) to provide more test data sets
+            log.info("Seeding second set of additional PENDING tickets...");
+            Customer c12 = getOrCreateCustomer("Loki Laufeyson", "+1-555-0866", "loki@example.com", "Asgard");
+            Vehicle v20 = getOrCreateVehicle(c8, "STARK-5", "VIN10000000000020", "Isuzu", "D-Max Cab4", 2021);
+            Vehicle v21 = getOrCreateVehicle(c9, "HULK-3", "VIN10000000000021", "Isuzu", "MU-X Onyx", 2019);
+            Vehicle v22 = getOrCreateVehicle(c10, "SPY-007", "VIN10000000000022", "Isuzu", "Trooper SE", 2022);
+            Vehicle v23 = getOrCreateVehicle(c12, "THOR-8", "VIN10000000000023", "Isuzu", "MU-7", 2018);
+
+            boolean t20Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v20.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t21Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v21.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t22Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v22.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t23Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v23.getId()) && t.getStatus() == TicketStatus.PENDING);
+
+            if (!t20Exists) {
+                ServiceTicket t20 = ServiceTicket.builder()
+                        .vehicle(v20)
+                        .description("Squeaking sound from passenger side front suspension when turning. Inspect ball joints and control arm bushings.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("70.00"))
+                        .totalCost(new BigDecimal("70.00"))
+                        .build();
+                ticketRepository.save(t20);
+                log.info("Seeded pending ticket t20.");
+            }
+
+            if (!t21Exists) {
+                ServiceTicket t21 = ServiceTicket.builder()
+                        .vehicle(v21)
+                        .description("Engine warning light stays on. Code scanner reports engine coolant temp sensor circuit malfunction (P0117).")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("110.00"))
+                        .totalCost(new BigDecimal("110.00"))
+                        .build();
+                ticketRepository.save(t21);
+                log.info("Seeded pending ticket t21.");
+            }
+
+            if (!t22Exists) {
+                ServiceTicket t22 = ServiceTicket.builder()
+                        .vehicle(v22)
+                        .description("Windshield washer fluid not spraying. Pumps running but no pressure. Inspect nozzles and hose line.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("45.00"))
+                        .totalCost(new BigDecimal("45.00"))
+                        .build();
+                ticketRepository.save(t22);
+                log.info("Seeded pending ticket t22.");
+            }
+
+            if (!t23Exists) {
+                ServiceTicket t23 = ServiceTicket.builder()
+                        .vehicle(v23)
+                        .description("Heater not working. Air blows lukewarm even when engine is hot. Check heater core and blend door actuator.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("95.05"))
+                        .totalCost(new BigDecimal("95.05"))
+                        .build();
+                ticketRepository.save(t23);
+                log.info("Seeded pending ticket t23.");
+            }
         } catch (Exception e) {
             log.error("Failed to seed additional PENDING tickets: ", e);
         }
