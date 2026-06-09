@@ -27,6 +27,20 @@ public class DatabaseSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Running database seeder validation...");
 
+        // Force update all existing vehicles' brands to Isuzu
+        try {
+            List<Vehicle> allVehicles = vehicleRepository.findAll();
+            for (Vehicle v : allVehicles) {
+                if (!"Isuzu".equalsIgnoreCase(v.getBrand())) {
+                    v.setBrand("Isuzu");
+                    vehicleRepository.save(v);
+                    log.info("Updated vehicle brand to Isuzu for plate: {}", v.getLicensePlate());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to force update vehicle brands to Isuzu: ", e);
+        }
+
         // 1. Seed Users (Mechanics, Advisors, Admins)
         User mechanic1 = getOrCreateUser("jdoe", UserRole.MECHANIC, "John Doe (Senior Mechanic)");
         User mechanic2 = getOrCreateUser("msmith", UserRole.MECHANIC, "Marcus Smith (Tire & Suspension)");
