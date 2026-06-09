@@ -248,6 +248,76 @@ public class DatabaseSeeder implements CommandLineRunner {
             t5.addTicketItem(item5); t5.recalculateTotal(); ticketRepository.save(t5);
         }
 
+        // Seed 4 additional PENDING tickets if they don't already exist
+        try {
+            log.info("Checking if additional PENDING tickets need to be seeded...");
+            
+            Customer c8 = getOrCreateCustomer("Steve Rogers", "+1-555-0422", "steve@example.com", "Brooklyn, NY");
+            Customer c9 = getOrCreateCustomer("Bruce Banner", "+1-555-0533", "bruce@example.com", "Green Country");
+            Customer c10 = getOrCreateCustomer("Natasha Romanoff", "+1-555-0644", "natasha@example.com", "St. Petersburg");
+
+            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Isuzu", "MU-X Ultimate", 2016);
+            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Isuzu", "D-Max V-Cross", 2020);
+            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Isuzu", "Elf", 2023);
+            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Isuzu", "Rodeo", 2021);
+
+            // Avoid duplicate seeding by checking if there's already a ticket with the same vehicle in PENDING status
+            boolean t16Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v8.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t17Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v9.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t18Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v10.getId()) && t.getStatus() == TicketStatus.PENDING);
+            boolean t19Exists = ticketRepository.findAll().stream().anyMatch(t -> t.getVehicle().getId().equals(v11.getId()) && t.getStatus() == TicketStatus.PENDING);
+
+            if (!t16Exists) {
+                ServiceTicket t16 = ServiceTicket.builder()
+                        .vehicle(v8)
+                        .description("Scheduled 40,000km check-up. Engine oil change, fluid check, and front suspension inspection.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("80.00"))
+                        .totalCost(new BigDecimal("80.00"))
+                        .build();
+                ticketRepository.save(t16);
+                log.info("Seeded pending ticket t16.");
+            }
+
+            if (!t17Exists) {
+                ServiceTicket t17 = ServiceTicket.builder()
+                        .vehicle(v9)
+                        .description("Battery charging indicator is red. Alternator check or battery replacement needed.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("90.00"))
+                        .totalCost(new BigDecimal("90.00"))
+                        .build();
+                ticketRepository.save(t17);
+                log.info("Seeded pending ticket t17.");
+            }
+
+            if (!t18Exists) {
+                ServiceTicket t18 = ServiceTicket.builder()
+                        .vehicle(v10)
+                        .description("Brake pedal feels spongy. Check brake fluid level and inspect front/rear brake hoses for leaks.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("100.00"))
+                        .totalCost(new BigDecimal("100.00"))
+                        .build();
+                ticketRepository.save(t18);
+                log.info("Seeded pending ticket t18.");
+            }
+
+            if (!t19Exists) {
+                ServiceTicket t19 = ServiceTicket.builder()
+                        .vehicle(v11)
+                        .description("Slight squealing sound from alternator belt. Belt tension adjustment or replacement needed.")
+                        .status(TicketStatus.PENDING)
+                        .laborCost(new BigDecimal("50.00"))
+                        .totalCost(new BigDecimal("50.00"))
+                        .build();
+                ticketRepository.save(t19);
+                log.info("Seeded pending ticket t19.");
+            }
+        } catch (Exception e) {
+            log.error("Failed to seed additional PENDING tickets: ", e);
+        }
+
         log.info("Database seeding completed successfully!");
     }
 
