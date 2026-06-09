@@ -1083,11 +1083,6 @@ export default function Page() {
               <p className="text-xs text-slate-500 dark:text-slate-400">{t.visualPipeline}</p>
             </div>
             <div className="flex items-center gap-2.5 text-xs">
-              <span className="text-slate-500">{t.filters}</span>
-              <span className="rounded bg-slate-50 border border-slate-200 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-2.5 py-1 flex items-center gap-1 font-semibold">
-                <Filter className="h-3 w-3 text-slate-400 dark:text-slate-500" />
-                {t.allVehicles} ({tickets.length})
-              </span>
               <button
                 onClick={exportToExcel}
                 className="rounded bg-emerald-600 hover:bg-emerald-500 border border-emerald-700 dark:border-emerald-600 text-white px-2.5 py-1.5 flex items-center gap-1.5 font-bold cursor-pointer transition shadow-sm hover:scale-[1.02] active:scale-95"
