@@ -14,19 +14,19 @@ import './dashboard.css';
 
 // Local Mock Fallback Data (used when backend is not running)
 const MOCK_MECHANICS: SystemUser[] = [
-  { id: 101, username: 'jdoe', role: 'MECHANIC', fullName: 'John Doe (Senior Mechanic)' },
-  { id: 102, username: 'msmith', role: 'MECHANIC', fullName: 'Marcus Smith (Tire & Suspension)' },
-  { id: 103, username: 'srogers', role: 'MECHANIC', fullName: 'Sarah Rogers (Electrical Expert)' },
-  { id: 104, username: 'tstark', role: 'MECHANIC', fullName: 'Tony Stark (Diagnostics Specialist)' },
+  { id: 1, username: 'jdoe', role: 'MECHANIC', fullName: 'John Doe (Senior Mechanic)' },
+  { id: 2, username: 'msmith', role: 'MECHANIC', fullName: 'Marcus Smith (Tire & Suspension)' },
+  { id: 3, username: 'srogers', role: 'MECHANIC', fullName: 'Sarah Rogers (Electrical Expert)' },
+  { id: 4, username: 'tstark', role: 'MECHANIC', fullName: 'Tony Stark (Diagnostics Specialist)' },
 ];
 
 const INITIAL_PARTS_CATALOG: SparePart[] = [
-  { id: 201, partNumber: 'BRK-552', name: 'Premium Ceramic Brake Pads', unitPrice: 89.99, stockQuantity: 12 },
-  { id: 202, partNumber: 'FIL-089', name: 'High-Flow Engine Oil Filter', unitPrice: 14.50, stockQuantity: 25 },
-  { id: 203, partNumber: 'BAT-990', name: '12V Lead-Acid Car Battery', unitPrice: 145.00, stockQuantity: 4 },
-  { id: 204, partNumber: 'WPR-112', name: 'All-Weather Wiper Blades (Set)', unitPrice: 29.99, stockQuantity: 15 },
-  { id: 205, partNumber: 'SPK-441', name: 'Iridium Spark Plug (Pack of 4)', unitPrice: 38.00, stockQuantity: 8 },
-  { id: 206, partNumber: 'BEL-201', name: 'Serpentine Alternator Belt', unitPrice: 42.50, stockQuantity: 3 },
+  { id: 1, partNumber: 'BRK-552', name: 'Premium Ceramic Brake Pads', unitPrice: 89.99, stockQuantity: 12 },
+  { id: 2, partNumber: 'FIL-089', name: 'High-Flow Engine Oil Filter', unitPrice: 14.50, stockQuantity: 25 },
+  { id: 3, partNumber: 'BAT-990', name: '12V Lead-Acid Car Battery', unitPrice: 145.00, stockQuantity: 4 },
+  { id: 4, partNumber: 'WPR-112', name: 'All-Weather Wiper Blades (Set)', unitPrice: 29.99, stockQuantity: 15 },
+  { id: 5, partNumber: 'SPK-441', name: 'Iridium Spark Plug (Pack of 4)', unitPrice: 38.00, stockQuantity: 8 },
+  { id: 6, partNumber: 'BEL-201', name: 'Serpentine Alternator Belt', unitPrice: 42.50, stockQuantity: 3 },
 ];
 
 const INITIAL_TICKETS: ServiceTicket[] = [
@@ -70,12 +70,12 @@ const INITIAL_TICKETS: ServiceTicket[] = [
     customerId: 402,
     customerName: 'Robert Dow',
     customerPhone: '+1-555-0144',
-    mechanicId: 101,
+    mechanicId: 1,
     mechanicName: 'John Doe (Senior Mechanic)',
     items: [
       {
         id: 501,
-        partId: 201,
+        partId: 1,
         partNumber: 'BRK-552',
         partName: 'Premium Ceramic Brake Pads',
         quantity: 1,
@@ -103,12 +103,12 @@ const INITIAL_TICKETS: ServiceTicket[] = [
     customerId: 403,
     customerName: 'Thomas Wayne',
     customerPhone: '+1-555-0182',
-    mechanicId: 103,
+    mechanicId: 3,
     mechanicName: 'Sarah Rogers (Electrical Expert)',
     items: [
       {
         id: 502,
-        partId: 203,
+        partId: 3,
         partNumber: 'BAT-990',
         partName: '12V Lead-Acid Car Battery',
         quantity: 1,
@@ -136,12 +136,12 @@ const INITIAL_TICKETS: ServiceTicket[] = [
     customerId: 404,
     customerName: 'Diana Prince',
     customerPhone: '+1-555-0155',
-    mechanicId: 104,
+    mechanicId: 4,
     mechanicName: 'Tony Stark (Diagnostics Specialist)',
     items: [
       {
         id: 503,
-        partId: 202,
+        partId: 2,
         partNumber: 'FIL-089',
         partName: 'High-Flow Engine Oil Filter',
         quantity: 1,
@@ -150,7 +150,7 @@ const INITIAL_TICKETS: ServiceTicket[] = [
       },
       {
         id: 504,
-        partId: 205,
+        partId: 5,
         partNumber: 'SPK-441',
         partName: 'Iridium Spark Plug (Pack of 4)',
         quantity: 1,
@@ -178,12 +178,12 @@ const INITIAL_TICKETS: ServiceTicket[] = [
     customerId: 405,
     customerName: 'Barry Allen',
     customerPhone: '+1-555-0166',
-    mechanicId: 102,
+    mechanicId: 2,
     mechanicName: 'Marcus Smith (Tire & Suspension)',
     items: [
       {
         id: 505,
-        partId: 204,
+        partId: 4,
         partNumber: 'WPR-112',
         partName: 'All-Weather Wiper Blades (Set)',
         quantity: 1,
