@@ -25,213 +25,255 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (userRepository.count() > 0) {
-            log.info("Database already seeded. Skipping seeder.");
-            return;
-        }
-
-        log.info("Seeding database with default mock data...");
+        log.info("Running database seeder validation...");
 
         // 1. Seed Users (Mechanics, Advisors, Admins)
-        User mechanic1 = User.builder().username("jdoe").passwordHash("password").role(UserRole.MECHANIC).fullName("John Doe (Senior Mechanic)").build();
-        User mechanic2 = User.builder().username("msmith").passwordHash("password").role(UserRole.MECHANIC).fullName("Marcus Smith (Tire & Suspension)").build();
-        User mechanic3 = User.builder().username("srogers").passwordHash("password").role(UserRole.MECHANIC).fullName("Sarah Rogers (Electrical Expert)").build();
-        User mechanic4 = User.builder().username("tstark").passwordHash("password").role(UserRole.MECHANIC).fullName("Tony Stark (Diagnostics Specialist)").build();
-        User advisor = User.builder().username("advisor").passwordHash("password").role(UserRole.SERVICE_ADVISOR).fullName("Service Advisor").build();
-        User admin = User.builder().username("admin").passwordHash("password").role(UserRole.ADMIN).fullName("Administrator").build();
+        User mechanic1 = getOrCreateUser("jdoe", UserRole.MECHANIC, "John Doe (Senior Mechanic)");
+        User mechanic2 = getOrCreateUser("msmith", UserRole.MECHANIC, "Marcus Smith (Tire & Suspension)");
+        User mechanic3 = getOrCreateUser("srogers", UserRole.MECHANIC, "Sarah Rogers (Electrical Expert)");
+        User mechanic4 = getOrCreateUser("tstark", UserRole.MECHANIC, "Tony Stark (Diagnostics Specialist)");
+        getOrCreateUser("advisor", UserRole.SERVICE_ADVISOR, "Service Advisor");
+        getOrCreateUser("admin", UserRole.ADMIN, "Administrator");
 
-        userRepository.saveAll(List.of(mechanic1, mechanic2, mechanic3, mechanic4, advisor, admin));
+        // 2. Seed Spare Parts
+        SparePart p1 = getOrCreateSparePart("BRK-552", "Premium Ceramic Brake Pads", new BigDecimal("89.99"), 12);
+        SparePart p2 = getOrCreateSparePart("FIL-089", "High-Flow Engine Oil Filter", new BigDecimal("14.50"), 25);
+        SparePart p3 = getOrCreateSparePart("BAT-990", "12V Lead-Acid Car Battery", new BigDecimal("145.00"), 4);
+        SparePart p4 = getOrCreateSparePart("WPR-112", "All-Weather Wiper Blades (Set)", new BigDecimal("29.99"), 15);
+        SparePart p5 = getOrCreateSparePart("SPK-441", "Iridium Spark Plug (Pack of 4)", new BigDecimal("38.00"), 8);
+        SparePart p6 = getOrCreateSparePart("BEL-201", "Serpentine Alternator Belt", new BigDecimal("42.50"), 3);
 
-        // 2. Seed Customers
-        Customer c1 = Customer.builder().fullName("Alice Johnson").phoneNumber("+1-555-0199").email("alice@example.com").address("123 Main St").build();
-        Customer c2 = Customer.builder().fullName("Robert Dow").phoneNumber("+1-555-0144").email("robert@example.com").address("456 Elm St").build();
-        Customer c3 = Customer.builder().fullName("Thomas Wayne").phoneNumber("+1-555-0182").email("thomas@example.com").address("Wayne Manor").build();
-        Customer c4 = Customer.builder().fullName("Diana Prince").phoneNumber("+1-555-0155").email("diana@example.com").address("Themyscira").build();
-        Customer c5 = Customer.builder().fullName("Barry Allen").phoneNumber("+1-555-0166").email("barry@example.com").address("Central City").build();
-        Customer c6 = Customer.builder().fullName("Peter Parker").phoneNumber("+1-555-0211").email("peter@example.com").address("Queens, NY").build();
-        Customer c7 = Customer.builder().fullName("Clark Kent").phoneNumber("+1-555-0312").email("clark@example.com").address("Metropolis").build();
-        Customer c8 = Customer.builder().fullName("Steve Rogers").phoneNumber("+1-555-0422").email("steve@example.com").address("Brooklyn, NY").build();
-        Customer c9 = Customer.builder().fullName("Bruce Banner").phoneNumber("+1-555-0533").email("bruce@example.com").address("Green Country").build();
-        Customer c10 = Customer.builder().fullName("Natasha Romanoff").phoneNumber("+1-555-0644").email("natasha@example.com").address("St. Petersburg").build();
-        Customer c11 = Customer.builder().fullName("Wanda Maximoff").phoneNumber("+1-555-0755").email("wanda@example.com").address("Westview").build();
-        Customer c12 = Customer.builder().fullName("Loki Laufeyson").phoneNumber("+1-555-0866").email("loki@example.com").address("Asgard").build();
+        // 3. Seed Customers, Vehicles, and Tickets if tickets are empty
+        if (ticketRepository.count() == 0) {
+            log.info("No service tickets found. Seeding default customers, vehicles, and tickets...");
 
-        customerRepository.saveAll(List.of(c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12));
+            // Seed Customers
+            Customer c1 = getOrCreateCustomer("Alice Johnson", "+1-555-0199", "alice@example.com", "123 Main St");
+            Customer c2 = getOrCreateCustomer("Robert Dow", "+1-555-0144", "robert@example.com", "456 Elm St");
+            Customer c3 = getOrCreateCustomer("Thomas Wayne", "+1-555-0182", "thomas@example.com", "Wayne Manor");
+            Customer c4 = getOrCreateCustomer("Diana Prince", "+1-555-0155", "diana@example.com", "Themyscira");
+            Customer c5 = getOrCreateCustomer("Barry Allen", "+1-555-0166", "barry@example.com", "Central City");
+            Customer c6 = getOrCreateCustomer("Peter Parker", "+1-555-0211", "peter@example.com", "Queens, NY");
+            Customer c7 = getOrCreateCustomer("Clark Kent", "+1-555-0312", "clark@example.com", "Metropolis");
+            Customer c8 = getOrCreateCustomer("Steve Rogers", "+1-555-0422", "steve@example.com", "Brooklyn, NY");
+            Customer c9 = getOrCreateCustomer("Bruce Banner", "+1-555-0533", "bruce@example.com", "Green Country");
+            Customer c10 = getOrCreateCustomer("Natasha Romanoff", "+1-555-0644", "natasha@example.com", "St. Petersburg");
+            Customer c11 = getOrCreateCustomer("Wanda Maximoff", "+1-555-0755", "wanda@example.com", "Westview");
+            Customer c12 = getOrCreateCustomer("Loki Laufeyson", "+1-555-0866", "loki@example.com", "Asgard");
 
-        // 3. Seed Vehicles
-        Vehicle v1 = Vehicle.builder().customer(c1).licensePlate("ABC-1234").vinNumber("VIN10000000000001").brand("Toyota").model("Camry").year(2020).build();
-        Vehicle v2 = Vehicle.builder().customer(c2).licensePlate("XYZ-9876").vinNumber("VIN10000000000002").brand("Honda").model("Civic").year(2018).build();
-        Vehicle v3 = Vehicle.builder().customer(c3).licensePlate("BAT-1100").vinNumber("VIN10000000000003").brand("Ford").model("Explorer").year(2017).build();
-        Vehicle v4 = Vehicle.builder().customer(c4).licensePlate("ENG-5544").vinNumber("VIN10000000000004").brand("BMW").model("330i").year(2021).build();
-        Vehicle v5 = Vehicle.builder().customer(c5).licensePlate("WIP-3322").vinNumber("VIN10000000000005").brand("Mazda").model("CX-5").year(2019).build();
-        Vehicle v6 = Vehicle.builder().customer(c6).licensePlate("SPIDER-1").vinNumber("VIN10000000000006").brand("Toyota").model("Corolla").year(2015).build();
-        Vehicle v7 = Vehicle.builder().customer(c7).licensePlate("SUPER-99").vinNumber("VIN10000000000007").brand("Chevrolet").model("Corvette").year(2022).build();
-        Vehicle v8 = Vehicle.builder().customer(c8).licensePlate("CAP-1941").vinNumber("VIN10000000000008").brand("Jeep").model("Wrangler").year(2016).build();
-        Vehicle v9 = Vehicle.builder().customer(c8).licensePlate("STARK-4").vinNumber("VIN10000000000009").brand("Audi").model("R8").year(2020).build();
-        Vehicle v10 = Vehicle.builder().customer(c9).licensePlate("GREEN-8").vinNumber("VIN10000000000010").brand("Tesla").model("Model S").year(2023).build();
-        Vehicle v11 = Vehicle.builder().customer(c10).licensePlate("BLACK-W").vinNumber("VIN10000000000011").brand("Porsche").model("911").year(2021).build();
-        Vehicle v12 = Vehicle.builder().customer(c11).licensePlate("WITCH-7").vinNumber("VIN10000000000012").brand("Volvo").model("XC90").year(2019).build();
-        Vehicle v13 = Vehicle.builder().customer(c12).licensePlate("MISCHIEF").vinNumber("VIN10000000000013").brand("Dodge").model("Charger").year(2018).build();
+            // Seed Vehicles
+            Vehicle v1 = getOrCreateVehicle(c1, "ABC-1234", "VIN10000000000001", "Toyota", "Camry", 2020);
+            Vehicle v2 = getOrCreateVehicle(c2, "XYZ-9876", "VIN10000000000002", "Honda", "Civic", 2018);
+            Vehicle v3 = getOrCreateVehicle(c3, "BAT-1100", "VIN10000000000003", "Ford", "Explorer", 2017);
+            Vehicle v4 = getOrCreateVehicle(c4, "ENG-5544", "VIN10000000000004", "BMW", "330i", 2021);
+            Vehicle v5 = getOrCreateVehicle(c5, "WIP-3322", "VIN10000000000005", "Mazda", "CX-5", 2019);
+            Vehicle v6 = getOrCreateVehicle(c6, "SPIDER-1", "VIN10000000000006", "Toyota", "Corolla", 2015);
+            Vehicle v7 = getOrCreateVehicle(c7, "SUPER-99", "VIN10000000000007", "Chevrolet", "Corvette", 2022);
+            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Jeep", "Wrangler", 2016);
+            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Audi", "R8", 2020);
+            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Tesla", "Model S", 2023);
+            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Porsche", "911", 2021);
+            Vehicle v12 = getOrCreateVehicle(c11, "WITCH-7", "VIN10000000000012", "Volvo", "XC90", 2019);
+            Vehicle v13 = getOrCreateVehicle(c12, "MISCHIEF", "VIN10000000000013", "Dodge", "Charger", 2018);
 
-        vehicleRepository.saveAll(List.of(v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13));
+            // Seed Tickets
+            ServiceTicket t1 = ServiceTicket.builder()
+                    .vehicle(v1)
+                    .description("Scheduled 50,000km mileage routine maintenance. Needs engine oil replacement, oil filter check, and general brake thickness inspection.")
+                    .status(TicketStatus.PENDING)
+                    .laborCost(new BigDecimal("95.00"))
+                    .totalCost(new BigDecimal("95.00"))
+                    .build();
 
-        // 4. Seed Spare Parts
-        SparePart p1 = SparePart.builder().partNumber("BRK-552").name("Premium Ceramic Brake Pads").unitPrice(new BigDecimal("89.99")).stockQuantity(12).build();
-        SparePart p2 = SparePart.builder().partNumber("FIL-089").name("High-Flow Engine Oil Filter").unitPrice(new BigDecimal("14.50")).stockQuantity(25).build();
-        SparePart p3 = SparePart.builder().partNumber("BAT-990").name("12V Lead-Acid Car Battery").unitPrice(new BigDecimal("145.00")).stockQuantity(4).build();
-        SparePart p4 = SparePart.builder().partNumber("WPR-112").name("All-Weather Wiper Blades (Set)").unitPrice(new BigDecimal("29.99")).stockQuantity(15).build();
-        SparePart p5 = SparePart.builder().partNumber("SPK-441").name("Iridium Spark Plug (Pack of 4)").unitPrice(new BigDecimal("38.00")).stockQuantity(8).build();
-        SparePart p6 = SparePart.builder().partNumber("BEL-201").name("Serpentine Alternator Belt").unitPrice(new BigDecimal("42.50")).stockQuantity(3).build();
+            ServiceTicket t2 = ServiceTicket.builder()
+                    .vehicle(v2)
+                    .assignedMechanic(mechanic1)
+                    .description("Squeaking noise when braking at low speeds. Check pads wear, rotor resurfacing might be required. Diagnosed thin brake pads.")
+                    .status(TicketStatus.IN_PROGRESS)
+                    .laborCost(new BigDecimal("150.00"))
+                    .totalCost(new BigDecimal("239.99"))
+                    .build();
 
-        sparePartRepository.saveAll(List.of(p1, p2, p3, p4, p5, p6));
+            ServiceTicket t3 = ServiceTicket.builder()
+                    .vehicle(v3)
+                    .assignedMechanic(mechanic3)
+                    .description("Vehicle does not crank or start. Battery light active on dashboard. Suspected dead battery. Jumpstart worked, alternator charging is correct.")
+                    .status(TicketStatus.WAITING_FOR_PARTS)
+                    .laborCost(new BigDecimal("60.00"))
+                    .totalCost(new BigDecimal("205.00"))
+                    .build();
 
-        // 5. Seed Tickets
-        ServiceTicket t1 = ServiceTicket.builder()
-                .vehicle(v1)
-                .description("Scheduled 50,000km mileage routine maintenance. Needs engine oil replacement, oil filter check, and general brake thickness inspection.")
-                .status(TicketStatus.PENDING)
-                .laborCost(new BigDecimal("95.00"))
-                .totalCost(new BigDecimal("95.00"))
-                .build();
+            ServiceTicket t4 = ServiceTicket.builder()
+                    .vehicle(v4)
+                    .assignedMechanic(mechanic4)
+                    .description("Check engine light blinking. Sputtering engine during acceleration. Spark plugs replacement. Tested compression, cylinders are clean.")
+                    .status(TicketStatus.COMPLETED)
+                    .laborCost(new BigDecimal("120.00"))
+                    .totalCost(new BigDecimal("172.50"))
+                    .build();
 
-        ServiceTicket t2 = ServiceTicket.builder()
-                .vehicle(v2)
-                .assignedMechanic(mechanic1)
-                .description("Squeaking noise when braking at low speeds. Check pads wear, rotor resurfacing might be required. Diagnosed thin brake pads.")
-                .status(TicketStatus.IN_PROGRESS)
-                .laborCost(new BigDecimal("150.00"))
-                .totalCost(new BigDecimal("239.99"))
-                .build();
+            ServiceTicket t5 = ServiceTicket.builder()
+                    .vehicle(v5)
+                    .assignedMechanic(mechanic2)
+                    .description("Wiper blades leaving streaks, front windshield wash nozzle clogged. Clean nozzle and replace blades.")
+                    .status(TicketStatus.DELIVERED)
+                    .laborCost(new BigDecimal("40.00"))
+                    .totalCost(new BigDecimal("69.99"))
+                    .build();
 
-        ServiceTicket t3 = ServiceTicket.builder()
-                .vehicle(v3)
-                .assignedMechanic(mechanic3)
-                .description("Vehicle does not crank or start. Battery light active on dashboard. Suspected dead battery. Jumpstart worked, alternator charging is correct.")
-                .status(TicketStatus.WAITING_FOR_PARTS)
-                .laborCost(new BigDecimal("60.00"))
-                .totalCost(new BigDecimal("205.00"))
-                .build();
+            ServiceTicket t6 = ServiceTicket.builder()
+                    .vehicle(v6)
+                    .description("Needs engine diagnostic. Check engine light is on and engine running rough under load.")
+                    .status(TicketStatus.PENDING)
+                    .laborCost(new BigDecimal("80.00"))
+                    .totalCost(new BigDecimal("80.00"))
+                    .build();
 
-        ServiceTicket t4 = ServiceTicket.builder()
-                .vehicle(v4)
-                .assignedMechanic(mechanic4)
-                .description("Check engine light blinking. Sputtering engine during acceleration. Spark plugs replacement. Tested compression, cylinders are clean.")
-                .status(TicketStatus.COMPLETED)
-                .laborCost(new BigDecimal("120.00"))
-                .totalCost(new BigDecimal("172.50"))
-                .build();
+            ServiceTicket t7 = ServiceTicket.builder()
+                    .vehicle(v7)
+                    .assignedMechanic(mechanic2)
+                    .description("Tire rotation and wheel alignment. Left pull noted while driving at highway speeds.")
+                    .status(TicketStatus.IN_PROGRESS)
+                    .laborCost(new BigDecimal("110.00"))
+                    .totalCost(new BigDecimal("110.00"))
+                    .build();
 
-        ServiceTicket t5 = ServiceTicket.builder()
-                .vehicle(v5)
-                .assignedMechanic(mechanic2)
-                .description("Wiper blades leaving streaks, front windshield wash nozzle clogged. Clean nozzle and replace blades.")
-                .status(TicketStatus.DELIVERED)
-                .laborCost(new BigDecimal("40.00"))
-                .totalCost(new BigDecimal("69.99"))
-                .build();
+            ServiceTicket t8 = ServiceTicket.builder()
+                    .vehicle(v8)
+                    .assignedMechanic(mechanic1)
+                    .description("Transmission fluid flush. Grinding noise when shifting from 2nd to 3rd gear.")
+                    .status(TicketStatus.WAITING_FOR_PARTS)
+                    .laborCost(new BigDecimal("180.00"))
+                    .totalCost(new BigDecimal("180.00"))
+                    .build();
 
-        ServiceTicket t6 = ServiceTicket.builder()
-                .vehicle(v6)
-                .description("Needs engine diagnostic. Check engine light is on and engine running rough under load.")
-                .status(TicketStatus.PENDING)
-                .laborCost(new BigDecimal("80.00"))
-                .totalCost(new BigDecimal("80.00"))
-                .build();
+            ServiceTicket t9 = ServiceTicket.builder()
+                    .vehicle(v9)
+                    .assignedMechanic(mechanic3)
+                    .description("A/C recharge and cabin air filter replacement. Air smells musty and doesn't blow cold enough.")
+                    .status(TicketStatus.COMPLETED)
+                    .laborCost(new BigDecimal("95.00"))
+                    .totalCost(new BigDecimal("95.00"))
+                    .build();
 
-        ServiceTicket t7 = ServiceTicket.builder()
-                .vehicle(v7)
-                .assignedMechanic(mechanic2)
-                .description("Tire rotation and wheel alignment. Left pull noted while driving at highway speeds.")
-                .status(TicketStatus.IN_PROGRESS)
-                .laborCost(new BigDecimal("110.00"))
-                .totalCost(new BigDecimal("110.00"))
-                .build();
+            ServiceTicket t10 = ServiceTicket.builder()
+                    .vehicle(v10)
+                    .assignedMechanic(mechanic2)
+                    .description("Headlight bulb replacement and windshield washer fluid top-off.")
+                    .status(TicketStatus.DELIVERED)
+                    .laborCost(new BigDecimal("30.00"))
+                    .totalCost(new BigDecimal("30.00"))
+                    .build();
 
-        ServiceTicket t8 = ServiceTicket.builder()
-                .vehicle(v8)
-                .assignedMechanic(mechanic1)
-                .description("Transmission fluid flush. Grinding noise when shifting from 2nd to 3rd gear.")
-                .status(TicketStatus.WAITING_FOR_PARTS)
-                .laborCost(new BigDecimal("180.00"))
-                .totalCost(new BigDecimal("180.00"))
-                .build();
+            ServiceTicket t11 = ServiceTicket.builder()
+                    .vehicle(v11)
+                    .description("Coolant leak under passenger side. Engine temperature gauge rising fast during idle.")
+                    .status(TicketStatus.PENDING)
+                    .laborCost(new BigDecimal("75.00"))
+                    .totalCost(new BigDecimal("75.00"))
+                    .build();
 
-        ServiceTicket t9 = ServiceTicket.builder()
-                .vehicle(v9)
-                .assignedMechanic(mechanic3)
-                .description("A/C recharge and cabin air filter replacement. Air smells musty and doesn't blow cold enough.")
-                .status(TicketStatus.COMPLETED)
-                .laborCost(new BigDecimal("95.00"))
-                .totalCost(new BigDecimal("95.00"))
-                .build();
+            ServiceTicket t12 = ServiceTicket.builder()
+                    .vehicle(v12)
+                    .assignedMechanic(mechanic2)
+                    .description("Suspension inspection. Squeaking when going over speed bumps or rough surfaces.")
+                    .status(TicketStatus.IN_PROGRESS)
+                    .laborCost(new BigDecimal("135.00"))
+                    .totalCost(new BigDecimal("135.00"))
+                    .build();
 
-        ServiceTicket t10 = ServiceTicket.builder()
-                .vehicle(v10)
-                .assignedMechanic(mechanic2)
-                .description("Headlight bulb replacement and windshield washer fluid top-off.")
-                .status(TicketStatus.DELIVERED)
-                .laborCost(new BigDecimal("30.00"))
-                .totalCost(new BigDecimal("30.00"))
-                .build();
+            ServiceTicket t13 = ServiceTicket.builder()
+                    .vehicle(v13)
+                    .assignedMechanic(mechanic1)
+                    .description("Brake rotor resurfacing. Squealing when stopping. Left front rotor has deep grooves.")
+                    .status(TicketStatus.WAITING_FOR_PARTS)
+                    .laborCost(new BigDecimal("160.00"))
+                    .totalCost(new BigDecimal("160.00"))
+                    .build();
 
-        ServiceTicket t11 = ServiceTicket.builder()
-                .vehicle(v11)
-                .description("Coolant leak under passenger side. Engine temperature gauge rising fast during idle.")
-                .status(TicketStatus.PENDING)
-                .laborCost(new BigDecimal("75.00"))
-                .totalCost(new BigDecimal("75.00"))
-                .build();
+            ServiceTicket t14 = ServiceTicket.builder()
+                    .vehicle(v6)
+                    .assignedMechanic(mechanic4)
+                    .description("Spark plug and ignition coil replacement. Cylinder 3 misfire code P0303 detected.")
+                    .status(TicketStatus.COMPLETED)
+                    .laborCost(new BigDecimal("140.00"))
+                    .totalCost(new BigDecimal("140.00"))
+                    .build();
 
-        ServiceTicket t12 = ServiceTicket.builder()
-                .vehicle(v12)
-                .assignedMechanic(mechanic2)
-                .description("Suspension inspection. Squeaking when going over speed bumps or rough surfaces.")
-                .status(TicketStatus.IN_PROGRESS)
-                .laborCost(new BigDecimal("135.00"))
-                .totalCost(new BigDecimal("135.00"))
-                .build();
+            ServiceTicket t15 = ServiceTicket.builder()
+                    .vehicle(v7)
+                    .assignedMechanic(mechanic3)
+                    .description("Regular 10,000km oil change, oil filter replacement, and tire pressure check.")
+                    .status(TicketStatus.DELIVERED)
+                    .laborCost(new BigDecimal("45.00"))
+                    .totalCost(new BigDecimal("45.00"))
+                    .build();
 
-        ServiceTicket t13 = ServiceTicket.builder()
-                .vehicle(v13)
-                .assignedMechanic(mechanic1)
-                .description("Brake rotor resurfacing. Squealing when stopping. Left front rotor has deep grooves.")
-                .status(TicketStatus.WAITING_FOR_PARTS)
-                .laborCost(new BigDecimal("160.00"))
-                .totalCost(new BigDecimal("160.00"))
-                .build();
+            ticketRepository.saveAll(List.of(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15));
 
-        ServiceTicket t14 = ServiceTicket.builder()
-                .vehicle(v6)
-                .assignedMechanic(mechanic4)
-                .description("Spark plug and ignition coil replacement. Cylinder 3 misfire code P0303 detected.")
-                .status(TicketStatus.COMPLETED)
-                .laborCost(new BigDecimal("140.00"))
-                .totalCost(new BigDecimal("140.00"))
-                .build();
+            // Add items to tickets
+            TicketItem item1 = TicketItem.builder().serviceTicket(t2).sparePart(p1).quantity(1).pricePerUnit(p1.getUnitPrice()).subtotal(p1.getUnitPrice()).build();
+            TicketItem item2 = TicketItem.builder().serviceTicket(t3).sparePart(p3).quantity(1).pricePerUnit(p3.getUnitPrice()).subtotal(p3.getUnitPrice()).build();
+            TicketItem item3 = TicketItem.builder().serviceTicket(t4).sparePart(p2).quantity(1).pricePerUnit(p2.getUnitPrice()).subtotal(p2.getUnitPrice()).build();
+            TicketItem item4 = TicketItem.builder().serviceTicket(t4).sparePart(p5).quantity(1).pricePerUnit(p5.getUnitPrice()).subtotal(p5.getUnitPrice()).build();
+            TicketItem item5 = TicketItem.builder().serviceTicket(t5).sparePart(p4).quantity(1).pricePerUnit(p4.getUnitPrice()).subtotal(p4.getUnitPrice()).build();
 
-        ServiceTicket t15 = ServiceTicket.builder()
-                .vehicle(v7)
-                .assignedMechanic(mechanic3)
-                .description("Regular 10,000km oil change, oil filter replacement, and tire pressure check.")
-                .status(TicketStatus.DELIVERED)
-                .laborCost(new BigDecimal("45.00"))
-                .totalCost(new BigDecimal("45.00"))
-                .build();
-
-        ticketRepository.saveAll(List.of(t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15));
-
-        // Add items to tickets
-        TicketItem item1 = TicketItem.builder().serviceTicket(t2).sparePart(p1).quantity(1).pricePerUnit(p1.getUnitPrice()).subtotal(p1.getUnitPrice()).build();
-        TicketItem item2 = TicketItem.builder().serviceTicket(t3).sparePart(p3).quantity(1).pricePerUnit(p3.getUnitPrice()).subtotal(p3.getUnitPrice()).build();
-        TicketItem item3 = TicketItem.builder().serviceTicket(t4).sparePart(p2).quantity(1).pricePerUnit(p2.getUnitPrice()).subtotal(p2.getUnitPrice()).build();
-        TicketItem item4 = TicketItem.builder().serviceTicket(t4).sparePart(p5).quantity(1).pricePerUnit(p5.getUnitPrice()).subtotal(p5.getUnitPrice()).build();
-        TicketItem item5 = TicketItem.builder().serviceTicket(t5).sparePart(p4).quantity(1).pricePerUnit(p4.getUnitPrice()).subtotal(p4.getUnitPrice()).build();
-
-        t2.addTicketItem(item1); t2.recalculateTotal(); ticketRepository.save(t2);
-        t3.addTicketItem(item2); t3.recalculateTotal(); ticketRepository.save(t3);
-        t4.addTicketItem(item3); t4.addTicketItem(item4); t4.recalculateTotal(); ticketRepository.save(t4);
-        t5.addTicketItem(item5); t5.recalculateTotal(); ticketRepository.save(t5);
+            t2.addTicketItem(item1); t2.recalculateTotal(); ticketRepository.save(t2);
+            t3.addTicketItem(item2); t3.recalculateTotal(); ticketRepository.save(t3);
+            t4.addTicketItem(item3); t4.addTicketItem(item4); t4.recalculateTotal(); ticketRepository.save(t4);
+            t5.addTicketItem(item5); t5.recalculateTotal(); ticketRepository.save(t5);
+        }
 
         log.info("Database seeding completed successfully!");
+    }
+
+    private User getOrCreateUser(String username, UserRole role, String fullName) {
+        return userRepository.findByUsername(username)
+                .orElseGet(() -> userRepository.save(
+                        User.builder()
+                                .username(username)
+                                .passwordHash("password")
+                                .role(role)
+                                .fullName(fullName)
+                                .build()
+                ));
+    }
+
+    private SparePart getOrCreateSparePart(String partNumber, String name, BigDecimal unitPrice, int stockQuantity) {
+        return sparePartRepository.findByPartNumber(partNumber)
+                .orElseGet(() -> sparePartRepository.save(
+                        SparePart.builder()
+                                .partNumber(partNumber)
+                                .name(name)
+                                .unitPrice(unitPrice)
+                                .stockQuantity(stockQuantity)
+                                .build()
+                ));
+    }
+
+    private Customer getOrCreateCustomer(String fullName, String phoneNumber, String email, String address) {
+        return customerRepository.findByPhoneNumber(phoneNumber)
+                .orElseGet(() -> customerRepository.save(
+                        Customer.builder()
+                                .fullName(fullName)
+                                .phoneNumber(phoneNumber)
+                                .email(email)
+                                .address(address)
+                                .build()
+                ));
+    }
+
+    private Vehicle getOrCreateVehicle(Customer customer, String licensePlate, String vinNumber, String brand, String model, int year) {
+        return vehicleRepository.findByLicensePlate(licensePlate)
+                .orElseGet(() -> vehicleRepository.save(
+                        Vehicle.builder()
+                                .customer(customer)
+                                .licensePlate(licensePlate)
+                                .vinNumber(vinNumber)
+                                .brand(brand)
+                                .model(model)
+                                .year(year)
+                                .build()
+                ));
     }
 }
