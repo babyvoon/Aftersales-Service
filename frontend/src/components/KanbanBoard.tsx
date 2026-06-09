@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { 
-  Clock, CheckCircle, Wrench, AlertTriangle, ArrowRight, 
-  Car, User, ArrowLeftRight, Package, Eye
+  Clock, CheckCircle, Wrench, AlertTriangle, 
+  Car, ArrowLeftRight, Package, Eye
 } from 'lucide-react';
 import { ServiceTicket, TicketStatus, UserRole } from '../types';
 
@@ -21,6 +21,14 @@ const VALID_TRANSITIONS: Record<TicketStatus, TicketStatus[]> = {
   WAITING_FOR_PARTS: ['IN_PROGRESS'],
   COMPLETED: ['DELIVERED'],
   DELIVERED: [],
+};
+
+const STATUS_TRANSLATION_KEYS: Record<TicketStatus, 'pending' | 'inProgress' | 'waitingParts' | 'completed' | 'delivered'> = {
+  PENDING: 'pending',
+  IN_PROGRESS: 'inProgress',
+  WAITING_FOR_PARTS: 'waitingParts',
+  COMPLETED: 'completed',
+  DELIVERED: 'delivered',
 };
 
 const TRANSLATIONS = {
@@ -137,8 +145,8 @@ export default function KanbanBoard({
     // State machine rule validation
     const allowed = VALID_TRANSITIONS[currentStatus] || [];
     if (!allowed.includes(targetStatus)) {
-      const fromLabel = language === 'EN' ? currentStatus.replace(/_/g, ' ') : TRANSLATIONS.TH[currentStatus as keyof typeof TRANSLATIONS.TH];
-      const toLabel = language === 'EN' ? targetStatus.replace(/_/g, ' ') : TRANSLATIONS.TH[targetStatus as keyof typeof TRANSLATIONS.TH];
+      const fromLabel = language === 'EN' ? currentStatus.replace(/_/g, ' ') : TRANSLATIONS.TH[STATUS_TRANSLATION_KEYS[currentStatus]];
+      const toLabel = language === 'EN' ? targetStatus.replace(/_/g, ' ') : TRANSLATIONS.TH[STATUS_TRANSLATION_KEYS[targetStatus]];
       
       return {
         valid: false,
@@ -288,91 +296,85 @@ export default function KanbanBoard({
                       key={ticket.id}
                       draggable
                       onDragStart={(e) => handleDragStart(e, ticket.id)}
-                      className={`group relative flex flex-col p-4 cursor-grab active:cursor-grabbing hover:scale-[1.02] ${
-                        ticket.status === 'PENDING' ? 'glowing-card glowing-card-slate' :
-                        ticket.status === 'IN_PROGRESS' ? 'glowing-card glowing-card-blue' :
-                        ticket.status === 'WAITING_FOR_PARTS' ? 'glowing-card glowing-card-amber' :
-                        ticket.status === 'COMPLETED' ? 'glowing-card glowing-card-emerald' :
-                        'glowing-card glowing-card-blue'
-                      }`}
+                      className="app-card-wrapper cursor-grab active:cursor-grabbing"
                     >
-                      {/* Ticket ID & Top Section */}
-                      <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
-                        <span>{language === 'EN' ? 'TICKET' : 'ใบงาน'} #{ticket.id}</span>
-                        <button
-                          onClick={() => onOpenDetails(ticket)}
-                          className="flex items-center gap-1 rounded bg-slate-100 px-1.5 py-0.5 text-slate-500 hover:bg-blue-50 hover:text-blue-600 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 transition"
-                        >
-                          <Eye className="h-3 w-3" />
-                          <span>{t.viewDetails}</span>
-                        </button>
-                      </div>
+                      <div 
+                        className="app-card"
+                        data-theme={
+                          ticket.status === 'PENDING' ? 'primary' :
+                          ticket.status === 'IN_PROGRESS' || ticket.status === 'WAITING_FOR_PARTS' ? 'accent' :
+                          'success'
+                        }
+                      >
+                        {/* Header */}
+                        <div className="app-card-header">
+                          <div className="app-card-avatar">
+                            <Car className="h-5 w-5" />
+                          </div>
+                          <div className="app-card-header-info">
+                            <h4 className="title">
+                              {language === 'EN' ? 'Ticket' : 'ใบงาน'} #{ticket.id}
+                            </h4>
+                            <p className="subtitle">
+                              {ticket.vehicleBrand} {ticket.vehicleModel} | {ticket.licensePlate}
+                            </p>
+                          </div>
+                          <button 
+                            type="button" 
+                            className="icon-btn"
+                            onClick={() => onOpenDetails(ticket)}
+                            title={t.viewDetails}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </button>
+                        </div>
 
-                      {/* Description */}
-                      <p className="mt-2 text-xs font-semibold text-slate-800 line-clamp-2 group-hover:text-slate-950 dark:text-slate-200 dark:group-hover:text-white">
-                        {ticket.description}
-                      </p>
+                        {/* Body */}
+                        <div className="app-card-body">
+                          <span className="badge">
+                            {language === 'EN' 
+                              ? ticket.status.replace(/_/g, ' ') 
+                              : TRANSLATIONS.TH[STATUS_TRANSLATION_KEYS[ticket.status]]}
+                          </span>
+                          <p className="text">
+                            {ticket.description}
+                          </p>
+                        </div>
 
-                      {/* Vehicle Badge */}
-                      <div className="mt-3 flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400">
-                        <Car className="h-3.5 w-3.5 shrink-0 text-slate-400" />
-                        <span className="font-semibold text-slate-700 dark:text-slate-300">
-                          {ticket.licensePlate}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          ({ticket.vehicleBrand} {ticket.vehicleModel})
-                        </span>
-                      </div>
+                        {/* Footer */}
+                        <div className="app-card-footer">
+                          <button 
+                            type="button" 
+                            className="btn-secondary" 
+                            onClick={() => onOpenDetails(ticket)}
+                          >
+                            {t.viewDetails}
+                          </button>
+                          
+                          {/* Rendering the allowed transitions */}
+                          {VALID_TRANSITIONS[ticket.status]?.map((nextStatus) => {
+                            const isRoleValid = !(currentRole === 'MECHANIC' && nextStatus !== 'IN_PROGRESS' && nextStatus !== 'COMPLETED');
+                            if (!isRoleValid) return null;
 
-                      {/* Customer Info */}
-                      <div className="mt-1 flex items-center gap-1.5 text-[11px] text-slate-400">
-                        <User className="h-3.5 w-3.5 shrink-0 text-slate-300" />
-                        <span className="truncate">{ticket.customerName}</span>
-                      </div>
+                            const statusLabel = language === 'EN' 
+                              ? nextStatus.replace(/_/g, ' ') 
+                              : TRANSLATIONS.TH[STATUS_TRANSLATION_KEYS[nextStatus]];
 
-                      {/* Mechanic Info */}
-                      <div className="mt-3.5 border-t border-slate-100 pt-2 dark:border-slate-800 flex items-center justify-between text-[10px]">
-                        <span className="text-slate-400 uppercase tracking-wider">{language === 'EN' ? 'Mechanic:' : 'ช่างประจำงาน:'}</span>
-                        <span className={`font-semibold rounded px-1.5 py-0.5 ${
-                          ticket.mechanicName 
-                            ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-300' 
-                            : 'bg-rose-50 text-rose-700 dark:bg-rose-950/20 dark:text-rose-300 font-normal italic'
-                        }`}>
-                          {ticket.mechanicName || t.unassigned}
-                        </span>
-                      </div>
-
-                      {/* Price / Invoice summary */}
-                      <div className="mt-2 flex items-center justify-between text-xs font-bold text-slate-800 dark:text-slate-200">
-                        <span className="text-slate-400 font-normal">{t.totalBill}</span>
-                        <span className="text-slate-900 dark:text-white">${ticket.totalWithVat.toFixed(2)}</span>
-                      </div>
-
-                      {/* Quick Move Buttons (Visible on hover on desktop, always visible on mobile) */}
-                      <div className="mt-3 border-t border-slate-100 pt-2 dark:border-slate-800 flex flex-wrap gap-1.5 justify-end">
-                        {VALID_TRANSITIONS[ticket.status]?.map((nextStatus) => {
-                          const isRoleValid = !(currentRole === 'MECHANIC' && nextStatus !== 'IN_PROGRESS' && nextStatus !== 'COMPLETED');
-                          if (!isRoleValid) return null;
-
-                          const statusLabel = language === 'EN' 
-                            ? nextStatus.replace(/_/g, ' ') 
-                            : TRANSLATIONS.TH[nextStatus as keyof typeof TRANSLATIONS.TH];
-
-                          return (
-                            <button
-                              key={nextStatus}
-                              type="button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleQuickMove(ticket, nextStatus);
-                              }}
-                              className="inline-flex items-center gap-0.5 rounded bg-slate-50 border border-slate-200/60 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 px-1.5 py-0.5 text-[9px] font-bold text-slate-500 uppercase tracking-tight dark:bg-slate-950 dark:border-slate-800 dark:hover:bg-blue-950/20 dark:hover:text-blue-300 transition"
-                            >
-                              <span>{t.to} {statusLabel}</span>
-                              <ArrowRight className="h-2 w-2" />
-                            </button>
-                          );
-                        })}
+                            return (
+                              <button
+                                key={nextStatus}
+                                type="button"
+                                className="btn-primary"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleQuickMove(ticket, nextStatus);
+                                }}
+                              >
+                                <span>{statusLabel}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
                       </div>
                     </div>
                   ))

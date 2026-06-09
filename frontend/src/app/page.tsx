@@ -3,8 +3,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
-  Wrench, Users, Shield, Hammer, Clipboard, Play, CheckCircle, 
-  DollarSign, Package, Plus, AlertCircle, Sparkles, Filter, LogOut, Globe, X, Sun, Moon,
+  Users, Shield, Hammer, Clipboard, Play, 
+  DollarSign, Package, Plus, Filter, LogOut, Globe, X, Sun, Moon,
   FileSpreadsheet
 } from 'lucide-react';
 import KanbanBoard from '../components/KanbanBoard';
@@ -12,191 +12,7 @@ import TicketDetailModal from '../components/TicketDetailModal';
 import { ServiceTicket, TicketStatus, User as SystemUser, SparePart, UserRole } from '../types';
 import './dashboard.css';
 
-// Mock Mechanics
-const MOCK_MECHANICS: SystemUser[] = [
-  { id: 101, username: 'jdoe', role: 'MECHANIC', fullName: 'John Doe (Senior Mechanic)' },
-  { id: 102, username: 'msmith', role: 'MECHANIC', fullName: 'Marcus Smith (Tire & Suspension)' },
-  { id: 103, username: 'srogers', role: 'MECHANIC', fullName: 'Sarah Rogers (Electrical Expert)' },
-  { id: 104, username: 'tstark', role: 'MECHANIC', fullName: 'Tony Stark (Diagnostics Specialist)' },
-];
 
-// Mock Parts Catalog
-const INITIAL_PARTS_CATALOG: SparePart[] = [
-  { id: 201, partNumber: 'BRK-552', name: 'Premium Ceramic Brake Pads', unitPrice: 89.99, stockQuantity: 12 },
-  { id: 202, partNumber: 'FIL-089', name: 'High-Flow Engine Oil Filter', unitPrice: 14.50, stockQuantity: 25 },
-  { id: 203, partNumber: 'BAT-990', name: '12V Lead-Acid Car Battery', unitPrice: 145.00, stockQuantity: 4 },
-  { id: 204, partNumber: 'WPR-112', name: 'All-Weather Wiper Blades (Set)', unitPrice: 29.99, stockQuantity: 15 },
-  { id: 205, partNumber: 'SPK-441', name: 'Iridium Spark Plug (Pack of 4)', unitPrice: 38.00, stockQuantity: 8 },
-  { id: 206, partNumber: 'BEL-201', name: 'Serpentine Alternator Belt', unitPrice: 42.50, stockQuantity: 3 },
-];
-
-// Mock Service Tickets
-const INITIAL_TICKETS: ServiceTicket[] = [
-  {
-    id: 1001,
-    description: 'Scheduled 50,000km mileage routine maintenance. Needs engine oil replacement, oil filter check, and general brake thickness inspection.',
-    status: 'PENDING',
-    laborCost: 95.00,
-    partsTotal: 0.00,
-    subtotal: 95.00,
-    vatAmount: 6.65,
-    totalWithVat: 101.65,
-    vehicleId: 301,
-    licensePlate: 'ABC-1234',
-    vehicleBrand: 'Toyota',
-    vehicleModel: 'Camry',
-    vehicleYear: 2020,
-    customerId: 401,
-    customerName: 'Alice Johnson',
-    customerPhone: '+1-555-0199',
-    mechanicId: null,
-    mechanicName: null,
-    items: [],
-    createdAt: '2026-05-30T10:00:00Z',
-    updatedAt: '2026-05-30T10:00:00Z',
-  },
-  {
-    id: 1002,
-    description: 'Squeaking noise when braking at low speeds. Check pads wear, rotor resurfacing might be required. Diagnosed thin brake pads.',
-    status: 'IN_PROGRESS',
-    laborCost: 150.00,
-    partsTotal: 89.99,
-    subtotal: 239.99,
-    vatAmount: 16.80,
-    totalWithVat: 256.79,
-    vehicleId: 302,
-    licensePlate: 'XYZ-9876',
-    vehicleBrand: 'Honda',
-    vehicleModel: 'Civic',
-    vehicleYear: 2018,
-    customerId: 402,
-    customerName: 'Robert Dow',
-    customerPhone: '+1-555-0144',
-    mechanicId: 101,
-    mechanicName: 'John Doe (Senior Mechanic)',
-    items: [
-      {
-        id: 501,
-        partId: 201,
-        partNumber: 'BRK-552',
-        partName: 'Premium Ceramic Brake Pads',
-        quantity: 1,
-        pricePerUnit: 89.99,
-        subtotal: 89.99,
-      }
-    ],
-    createdAt: '2026-05-30T09:15:00Z',
-    updatedAt: '2026-05-30T11:20:00Z',
-  },
-  {
-    id: 1003,
-    description: 'Vehicle does not crank or start. Battery light active on dashboard. Suspected dead battery. Jumpstart worked, alternator charging is correct.',
-    status: 'WAITING_FOR_PARTS',
-    laborCost: 60.00,
-    partsTotal: 145.00,
-    subtotal: 205.00,
-    vatAmount: 14.35,
-    totalWithVat: 219.35,
-    vehicleId: 303,
-    licensePlate: 'BAT-1100',
-    vehicleBrand: 'Ford',
-    vehicleModel: 'Explorer',
-    vehicleYear: 2017,
-    customerId: 403,
-    customerName: 'Thomas Wayne',
-    customerPhone: '+1-555-0182',
-    mechanicId: 103,
-    mechanicName: 'Sarah Rogers (Electrical Expert)',
-    items: [
-      {
-        id: 502,
-        partId: 203,
-        partNumber: 'BAT-990',
-        partName: '12V Lead-Acid Car Battery',
-        quantity: 1,
-        pricePerUnit: 145.00,
-        subtotal: 145.00,
-      }
-    ],
-    createdAt: '2026-05-29T14:30:00Z',
-    updatedAt: '2026-05-30T08:45:00Z',
-  },
-  {
-    id: 1004,
-    description: 'Check engine light blinking. Sputtering engine during acceleration. Spark plugs replacement. Tested compression, cylinders are clean.',
-    status: 'COMPLETED',
-    laborCost: 120.00,
-    partsTotal: 52.50,
-    subtotal: 172.50,
-    vatAmount: 12.08,
-    totalWithVat: 184.58,
-    vehicleId: 304,
-    licensePlate: 'ENG-5544',
-    vehicleBrand: 'BMW',
-    vehicleModel: '330i',
-    vehicleYear: 2021,
-    customerId: 404,
-    customerName: 'Diana Prince',
-    customerPhone: '+1-555-0155',
-    mechanicId: 104,
-    mechanicName: 'Tony Stark (Diagnostics Specialist)',
-    items: [
-      {
-        id: 503,
-        partId: 202,
-        partNumber: 'FIL-089',
-        partName: 'High-Flow Engine Oil Filter',
-        quantity: 1,
-        pricePerUnit: 14.50,
-        subtotal: 14.50,
-      },
-      {
-        id: 504,
-        partId: 205,
-        partNumber: 'SPK-441',
-        partName: 'Iridium Spark Plug (Pack of 4)',
-        quantity: 1,
-        pricePerUnit: 38.00,
-        subtotal: 38.00,
-      }
-    ],
-    createdAt: '2026-05-29T11:00:00Z',
-    updatedAt: '2026-05-30T15:30:00Z',
-  },
-  {
-    id: 1005,
-    description: 'Wiper blades leaving streaks, front windshield wash nozzle clogged. Clean nozzle and replace blades.',
-    status: 'DELIVERED',
-    laborCost: 40.00,
-    partsTotal: 29.99,
-    subtotal: 69.99,
-    vatAmount: 4.90,
-    totalWithVat: 74.89,
-    vehicleId: 305,
-    licensePlate: 'WIP-3322',
-    vehicleBrand: 'Mazda',
-    vehicleModel: 'CX-5',
-    vehicleYear: 2019,
-    customerId: 405,
-    customerName: 'Barry Allen',
-    customerPhone: '+1-555-0166',
-    mechanicId: 102,
-    mechanicName: 'Marcus Smith (Tire & Suspension)',
-    items: [
-      {
-        id: 505,
-        partId: 204,
-        partNumber: 'WPR-112',
-        partName: 'All-Weather Wiper Blades (Set)',
-        quantity: 1,
-        pricePerUnit: 29.99,
-        subtotal: 29.99,
-      }
-    ],
-    createdAt: '2026-05-28T09:00:00Z',
-    updatedAt: '2026-05-29T16:00:00Z',
-  }
-];
 
 const TRANSLATIONS = {
   EN: {
@@ -321,13 +137,16 @@ const TRANSLATIONS = {
   }
 };
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+
 export default function Page() {
   const router = useRouter();
   const [currentRole, setCurrentRole] = useState<UserRole>('SERVICE_ADVISOR');
   const [language, setLanguage] = useState<'EN' | 'TH'>('TH');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
-  const [tickets, setTickets] = useState<ServiceTicket[]>(INITIAL_TICKETS);
-  const [partsCatalog, setPartsCatalog] = useState<SparePart[]>(INITIAL_PARTS_CATALOG);
+  const [tickets, setTickets] = useState<ServiceTicket[]>([]);
+  const [partsCatalog, setPartsCatalog] = useState<SparePart[]>([]);
+  const [mechanics, setMechanics] = useState<SystemUser[]>([]);
   const [selectedTicket, setSelectedTicket] = useState<ServiceTicket | null>(null);
   
   // Create ticket state
@@ -341,6 +160,50 @@ export default function Page() {
   const [newDescription, setNewDescription] = useState('');
   const [newLaborCost, setNewLaborCost] = useState<number>(80);
 
+  const [isMounted, setIsMounted] = useState(false);
+
+  const fetchTickets = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets`);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          setTickets(body.data);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching tickets:", err);
+    }
+  };
+
+  const fetchParts = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/parts`);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          setPartsCatalog(body.data);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching parts:", err);
+    }
+  };
+
+  const fetchMechanics = async () => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/users/mechanics`);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          setMechanics(body.data);
+        }
+      }
+    } catch (err) {
+      console.error("Error fetching mechanics:", err);
+    }
+  };
+
   // Load configuration from sessionStorage
   useEffect(() => {
     const savedRole = sessionStorage.getItem('simulated_role') as UserRole;
@@ -350,7 +213,14 @@ export default function Page() {
     if (!savedRole) {
       router.push('/login');
     } else {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCurrentRole(savedRole);
+      setIsMounted(true);
+      
+      // Fetch initial data from backend APIs
+      fetchTickets();
+      fetchParts();
+      fetchMechanics();
     }
     
     if (savedLang) {
@@ -444,7 +314,7 @@ export default function Page() {
       totalBillVal += ticket.totalWithVat;
     });
 
-    const getCleanString = (val: any) => {
+    const getCleanString = (val: unknown) => {
       if (val === null || val === undefined) return '';
       return String(val)
         .replace(/&/g, '&amp;')
@@ -599,150 +469,126 @@ export default function Page() {
   }, [tickets, partsCatalog]);
 
   // Handle status transition update
-  const handleStatusChange = (ticketId: number, newStatus: TicketStatus) => {
-    setTickets(prev => 
-      prev.map(t => {
-        if (t.id === ticketId) {
-          return {
-            ...t,
-            status: newStatus,
-            updatedAt: new Date().toISOString()
-          };
-        }
-        return t;
-      })
-    );
+  const handleStatusChange = async (ticketId: number, newStatus: TicketStatus) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
 
-    if (selectedTicket && selectedTicket.id === ticketId) {
-      setSelectedTicket(prev => prev ? { ...prev, status: newStatus } : null);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          const updatedTicket = body.data;
+          setTickets(prev => prev.map(t => t.id === ticketId ? updatedTicket : t));
+          if (selectedTicket && selectedTicket.id === ticketId) {
+            setSelectedTicket(updatedTicket);
+          }
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Failed to update status");
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Failed to connect to server");
     }
   };
 
   // Handle updates from Detail Modal
   const handleUpdateTicket = (updatedTicket: ServiceTicket) => {
-    const oldTicket = tickets.find(t => t.id === updatedTicket.id);
-    if (oldTicket) {
-      const catalogAdjustments: Record<number, number> = {};
-
-      oldTicket.items.forEach(oldItem => {
-        const newItem = updatedTicket.items.find(item => item.partId === oldItem.partId);
-        if (!newItem) {
-          catalogAdjustments[oldItem.partId] = (catalogAdjustments[oldItem.partId] || 0) + oldItem.quantity;
-        } else if (newItem.quantity !== oldItem.quantity) {
-          const diff = oldItem.quantity - newItem.quantity;
-          catalogAdjustments[oldItem.partId] = (catalogAdjustments[oldItem.partId] || 0) + diff;
-        }
-      });
-
-      updatedTicket.items.forEach(newItem => {
-        const oldItem = oldTicket.items.find(item => item.partId === newItem.partId);
-        if (!oldItem) {
-          catalogAdjustments[newItem.partId] = (catalogAdjustments[newItem.partId] || 0) - newItem.quantity;
-        }
-      });
-
-      setPartsCatalog(prevCatalog => 
-        prevCatalog.map(part => {
-          const adj = catalogAdjustments[part.id];
-          if (adj) {
-            return {
-              ...part,
-              stockQuantity: Math.max(0, part.stockQuantity + adj)
-            };
-          }
-          return part;
-        })
-      );
-    }
-
     setTickets(prev => prev.map(t => t.id === updatedTicket.id ? updatedTicket : t));
     setSelectedTicket(updatedTicket);
+    fetchParts(); // Sync parts stock after update
   };
 
   // Handle soft deleting a ticket
-  const handleDeleteTicket = (ticketId: number) => {
-    const ticket = tickets.find(t => t.id === ticketId);
-    if (ticket) {
-      setPartsCatalog(prevCatalog => 
-        prevCatalog.map(part => {
-          const item = ticket.items.find(i => i.partId === part.id);
-          if (item) {
-            return {
-              ...part,
-              stockQuantity: part.stockQuantity + item.quantity
-            };
-          }
-          return part;
-        })
-      );
-    }
+  const handleDeleteTicket = async (ticketId: number) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticketId}`, {
+        method: 'DELETE'
+      });
 
-    setTickets(prev => prev.filter(t => t.id !== ticketId));
-    setSelectedTicket(null);
+      if (res.ok) {
+        setTickets(prev => prev.filter(t => t.id !== ticketId));
+        setSelectedTicket(null);
+        fetchParts(); // Sync parts stock after delete
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Failed to delete ticket");
+      }
+    } catch (err) {
+      console.error("Error deleting ticket:", err);
+      alert("Failed to connect to server");
+    }
   };
 
   // Create new ticket
-  const handleCreateTicket = (e: React.FormEvent) => {
+  const handleCreateTicket = async (e: React.FormEvent) => {
     e.preventDefault();
     if (currentRole === 'MECHANIC') return;
 
-    const labor = Number(newLaborCost);
-    const subtotal = labor;
-    const vat = Number((subtotal * 0.07).toFixed(2));
-    const total = Number((subtotal + vat).toFixed(2));
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          customerName: newCustomerName,
+          customerPhone: newCustomerPhone,
+          licensePlate: newLicensePlate.toUpperCase(),
+          vehicleBrand: newBrand,
+          vehicleModel: newModel,
+          vehicleYear: Number(newYear),
+          description: newDescription,
+          laborCost: Number(newLaborCost),
+          mechanicId: null
+        })
+      });
 
-    const newTicket: ServiceTicket = {
-      id: Date.now(),
-      description: newDescription,
-      status: 'PENDING',
-      laborCost: labor,
-      partsTotal: 0.00,
-      subtotal,
-      vatAmount: vat,
-      totalWithVat: total,
-      vehicleId: Math.floor(Math.random() * 1000) + 500,
-      licensePlate: newLicensePlate.toUpperCase(),
-      vehicleBrand: newBrand,
-      vehicleModel: newModel,
-      vehicleYear: Number(newYear),
-      customerId: Math.floor(Math.random() * 1000) + 500,
-      customerName: newCustomerName,
-      customerPhone: newCustomerPhone,
-      mechanicId: null,
-      mechanicName: null,
-      items: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          setTickets(prev => [body.data, ...prev]);
+          setIsCreating(false);
 
-    setTickets(prev => [newTicket, ...prev]);
-    setIsCreating(false);
-
-    setNewCustomerName('');
-    setNewCustomerPhone('');
-    setNewLicensePlate('');
-    setNewBrand('');
-    setNewModel('');
-    setNewYear(new Date().getFullYear());
-    setNewDescription('');
-    setNewLaborCost(80);
+          setNewCustomerName('');
+          setNewCustomerPhone('');
+          setNewLicensePlate('');
+          setNewBrand('');
+          setNewModel('');
+          setNewYear(new Date().getFullYear());
+          setNewDescription('');
+          setNewLaborCost(80);
+          fetchParts(); // Sync parts catalog
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Failed to create ticket");
+      }
+    } catch (err) {
+      console.error("Error creating ticket:", err);
+      alert("Failed to connect to server");
+    }
   };
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-slate-650 dark:text-slate-400 font-medium">Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container min-h-screen bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 flex flex-col transition-colors duration-300">
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              try {
-                if (!sessionStorage.getItem('simulated_role')) {
-                  window.location.replace('/login');
-                }
-              } catch (e) {}
-            })();
-          `,
-        }}
-      />
       
       {/* Ambient glowing circles in background */}
       <div className="dashboard-ambient-rings">
@@ -998,7 +844,7 @@ export default function Page() {
         onUpdateTicket={handleUpdateTicket}
         onDeleteTicket={handleDeleteTicket}
         currentRole={currentRole}
-        mechanics={MOCK_MECHANICS}
+        mechanics={mechanics}
         partsCatalog={partsCatalog}
         language={language}
       />

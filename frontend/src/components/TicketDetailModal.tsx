@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -98,6 +99,8 @@ const TRANSLATIONS = {
   }
 };
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+
 export default function TicketDetailModal({
   isOpen,
   onClose,
@@ -142,38 +145,42 @@ export default function TicketDetailModal({
   const isAdmin = currentRole === 'ADMIN';
 
   // Handle general field changes (Labor, Description, Mechanic)
-  const handleSaveGeneral = (e: React.FormEvent) => {
+  const handleSaveGeneral = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isReadOnly) return;
 
-    const assignedMechanic = mechanics.find(m => m.id === mechanicId);
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticket.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          description,
+          laborCost: Number(laborCost),
+          mechanicId: mechanicId || null
+        })
+      });
 
-    // Live billing recalculation
-    const partsTotal = ticket.items.reduce((sum, item) => sum + item.subtotal, 0);
-    const subtotal = Number((laborCost + partsTotal).toFixed(2));
-    const vatAmount = Number((subtotal * 0.07).toFixed(2));
-    const totalWithVat = Number((subtotal + vatAmount).toFixed(2));
-
-    const updated: ServiceTicket = {
-      ...ticket,
-      description,
-      laborCost: Number(laborCost),
-      partsTotal,
-      subtotal,
-      vatAmount,
-      totalWithVat,
-      mechanicId: mechanicId || null,
-      mechanicName: assignedMechanic ? assignedMechanic.fullName : null,
-      updatedAt: new Date().toISOString(),
-    };
-
-    onUpdateTicket(updated);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          onUpdateTicket(body.data);
+          setSaveSuccess(true);
+          setTimeout(() => setSaveSuccess(false), 3000);
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Failed to save details");
+      }
+    } catch (err) {
+      console.error("Error saving general details:", err);
+      alert("Failed to connect to server");
+    }
   };
 
   // Add parts to ticket
-  const handleAddPart = () => {
+  const handleAddPart = async () => {
     if (isReadOnly) return;
     if (!selectedPartId) return;
 
@@ -188,83 +195,57 @@ export default function TicketDetailModal({
 
     setPartError(null);
 
-    // Check if item already exists in ticket, if so update quantity, otherwise create new
-    let updatedItems = [...ticket.items];
-    const existingIndex = updatedItems.findIndex(item => item.partId === selectedPartId);
-
-    if (existingIndex > -1) {
-      const existing = updatedItems[existingIndex];
-      const newQty = existing.quantity + partQuantity;
-      
-      // Re-verify cumulative stock limit
-      if (newQty > selectedPart.stockQuantity) {
-        setPartError(
-          t.cannotAddMore
-            .replace('{qty}', newQty.toString())
-            .replace('{stock}', selectedPart.stockQuantity.toString())
-        );
-        return;
-      }
-
-      updatedItems[existingIndex] = {
-        ...existing,
-        quantity: newQty,
-        subtotal: Number((newQty * existing.pricePerUnit).toFixed(2)),
-      };
-    } else {
-      updatedItems.push({
-        id: Date.now(),
-        partId: selectedPart.id,
-        partNumber: selectedPart.partNumber,
-        partName: selectedPart.name,
-        quantity: partQuantity,
-        pricePerUnit: selectedPart.unitPrice,
-        subtotal: Number((partQuantity * selectedPart.unitPrice).toFixed(2)),
-        createdAt: new Date().toISOString(),
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticket.id}/items`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          partId: selectedPartId,
+          quantity: partQuantity
+        })
       });
+
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          onUpdateTicket(body.data);
+          setPartQuantity(1);
+          setPartError(null);
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        setPartError(err.message || "Failed to add part");
+      }
+    } catch (err) {
+      console.error("Error adding part:", err);
+      setPartError("Failed to connect to server");
     }
-
-    const partsTotal = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const subtotal = Number((ticket.laborCost + partsTotal).toFixed(2));
-    const vatAmount = Number((subtotal * 0.07).toFixed(2));
-    const totalWithVat = Number((subtotal + vatAmount).toFixed(2));
-
-    const updatedTicket: ServiceTicket = {
-      ...ticket,
-      items: updatedItems,
-      partsTotal,
-      subtotal,
-      vatAmount,
-      totalWithVat,
-      updatedAt: new Date().toISOString(),
-    };
-
-    onUpdateTicket(updatedTicket);
-    setPartQuantity(1);
   };
 
   // Remove parts from ticket
-  const handleRemovePart = (itemId: number) => {
+  const handleRemovePart = async (itemId: number) => {
     if (isReadOnly) return;
 
-    const updatedItems = ticket.items.filter(item => item.id !== itemId);
-    
-    const partsTotal = updatedItems.reduce((sum, item) => sum + item.subtotal, 0);
-    const subtotal = Number((ticket.laborCost + partsTotal).toFixed(2));
-    const vatAmount = Number((subtotal * 0.07).toFixed(2));
-    const totalWithVat = Number((subtotal + vatAmount).toFixed(2));
+    try {
+      const res = await fetch(`${API_BASE_URL}/tickets/${ticket.id}/items/${itemId}`, {
+        method: 'DELETE'
+      });
 
-    const updatedTicket: ServiceTicket = {
-      ...ticket,
-      items: updatedItems,
-      partsTotal,
-      subtotal,
-      vatAmount,
-      totalWithVat,
-      updatedAt: new Date().toISOString(),
-    };
-
-    onUpdateTicket(updatedTicket);
+      if (res.ok) {
+        const body = await res.json();
+        if (body.success && body.data) {
+          onUpdateTicket(body.data);
+        }
+      } else {
+        const err = await res.json().catch(() => ({}));
+        alert(err.message || "Failed to remove part");
+      }
+    } catch (err) {
+      console.error("Error removing part:", err);
+      alert("Failed to connect to server");
+    }
   };
 
   return (

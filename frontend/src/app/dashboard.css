@@ -103,7 +103,7 @@
   height: 550px;
   top: -150px;
   right: -150px;
-  opacity: 0.03;
+  opacity: 0.12;
   transition: opacity 0.5s, filter 0.5s;
 }
 
@@ -113,16 +113,16 @@
   height: 500px;
   bottom: -150px;
   left: -150px;
-  opacity: 0.03;
+  opacity: 0.12;
   transition: opacity 0.5s, filter 0.5s;
 }
 
 .dark .dashboard-ambient-ring-1 {
-  opacity: 0.07;
+  opacity: 0.18;
 }
 
 .dark .dashboard-ambient-ring-2 {
-  opacity: 0.07;
+  opacity: 0.18;
 }
 
 .dashboard-ambient-ring-1 i,
@@ -159,6 +159,24 @@
   backdrop-filter: blur(8px);
   border: 1.5px solid rgba(226, 232, 240, 0.7) !important;
   z-index: 1;
+  overflow: hidden;
+}
+
+/* Colored top-border accent bar */
+.glowing-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  border-radius: 1.25rem 1.25rem 0 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.glowing-card:hover::before {
+  opacity: 1;
 }
 
 .dark .glowing-card {
@@ -170,25 +188,82 @@
   transform: translateY(-4px);
 }
 
+/* Blue (Active Workshop) */
+.glowing-card-blue {
+  background: linear-gradient(135deg, rgba(219, 234, 254, 0.95) 0%, rgba(239, 246, 255, 0.8) 60%) !important;
+  border-color: rgba(96, 165, 250, 0.7) !important;
+}
+.dark .glowing-card-blue {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.35) 0%, rgba(15, 23, 42, 0.65) 60%) !important;
+  border-color: rgba(59, 130, 246, 0.45) !important;
+}
+.glowing-card-blue::before {
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  opacity: 1;
+  height: 4px;
+}
 .glowing-card-blue:hover {
   border-color: #3b82f6 !important;
-  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 0 15px rgba(59, 130, 246, 0.12);
+  box-shadow: 0 12px 35px -5px rgba(59, 130, 246, 0.35), 0 0 25px rgba(59, 130, 246, 0.2);
 }
 
+/* Slate (Pending Intake) */
+.glowing-card-slate {
+  background: linear-gradient(135deg, rgba(226, 232, 240, 0.95) 0%, rgba(241, 245, 249, 0.8) 60%) !important;
+  border-color: rgba(100, 116, 139, 0.55) !important;
+}
+.dark .glowing-card-slate {
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.38) 0%, rgba(15, 23, 42, 0.65) 60%) !important;
+  border-color: rgba(100, 116, 139, 0.45) !important;
+}
+.glowing-card-slate::before {
+  background: linear-gradient(90deg, #64748b, #94a3b8);
+  opacity: 1;
+  height: 4px;
+}
 .glowing-card-slate:hover {
   border-color: #64748b !important;
-  box-shadow: 0 10px 25px -5px rgba(100, 116, 139, 0.15), 0 0 15px rgba(100, 116, 139, 0.12);
+  box-shadow: 0 12px 35px -5px rgba(100, 116, 139, 0.35), 0 0 25px rgba(100, 116, 139, 0.2);
 }
 
+/* Emerald (Revenue) */
+.glowing-card-emerald {
+  background: linear-gradient(135deg, rgba(167, 243, 208, 0.7) 0%, rgba(209, 250, 229, 0.85) 60%) !important;
+  border-color: rgba(52, 211, 153, 0.7) !important;
+}
+.dark .glowing-card-emerald {
+  background: linear-gradient(135deg, rgba(6, 78, 59, 0.38) 0%, rgba(15, 23, 42, 0.65) 60%) !important;
+  border-color: rgba(16, 185, 129, 0.45) !important;
+}
+.glowing-card-emerald::before {
+  background: linear-gradient(90deg, #10b981, #34d399);
+  opacity: 1;
+  height: 4px;
+}
 .glowing-card-emerald:hover {
   border-color: #10b981 !important;
-  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.15), 0 0 15px rgba(16, 185, 129, 0.12);
+  box-shadow: 0 12px 35px -5px rgba(16, 185, 129, 0.35), 0 0 25px rgba(16, 185, 129, 0.2);
 }
 
+/* Amber (Inventory Alerts) */
+.glowing-card-amber {
+  background: linear-gradient(135deg, rgba(253, 230, 138, 0.7) 0%, rgba(254, 243, 199, 0.85) 60%) !important;
+  border-color: rgba(251, 191, 36, 0.7) !important;
+}
+.dark .glowing-card-amber {
+  background: linear-gradient(135deg, rgba(120, 53, 15, 0.38) 0%, rgba(15, 23, 42, 0.65) 60%) !important;
+  border-color: rgba(245, 158, 11, 0.45) !important;
+}
+.glowing-card-amber::before {
+  background: linear-gradient(90deg, #f59e0b, #fbbf24);
+  opacity: 1;
+  height: 4px;
+}
 .glowing-card-amber:hover {
   border-color: #f59e0b !important;
-  box-shadow: 0 10px 25px -5px rgba(245, 158, 11, 0.15), 0 0 15px rgba(245, 158, 11, 0.12);
+  box-shadow: 0 12px 35px -5px rgba(245, 158, 11, 0.35), 0 0 25px rgba(245, 158, 11, 0.2);
 }
+
 
 /* Kanban Board & Columns styling */
 .kanban-board-wrapper {
@@ -294,3 +369,240 @@
   border: 2px dashed var(--column-clr) !important;
   transform: scale(1.02);
 }
+
+/* ==========================================================================
+   Pastel Color-Adaptive Cards (Modern CSS)
+   ========================================================================== */
+
+.app-card-wrapper {
+  container-type: inline-size;
+  width: 100%;
+}
+
+.app-card {
+  --primary-bg-light: #fdf2f4;
+  --primary-text-light: #9d174d;
+  --primary-badge-light: #fce7eb;
+  --primary-btn-light: #c2185b;
+
+  --accent-bg-light: #f5f3ff;
+  --accent-text-light: #6d28d9;
+  --accent-badge-light: #ede9fe;
+  --accent-btn-light: #7c3aed;
+
+  --success-bg-light: #e6fcf5;
+  --success-text-light: #087f5b;
+  --success-badge-light: #c3fae8;
+  --success-btn-light: #099268;
+
+  --primary-bg-dark: #2a1b1f;
+  --primary-text-dark: #fda4af;
+  --primary-badge-dark: #4c1d24;
+  --primary-btn-dark: #f43f5e;
+
+  --accent-bg-dark: #1c1917; /* using warm charcoal tone fallback */
+  --accent-text-dark: #e9d5ff;
+  --accent-badge-dark: #3b0764;
+  --accent-btn-dark: #a855f7;
+
+  --success-bg-dark: #062f22;
+  --success-text-dark: #6ee7b7;
+  --success-badge-dark: #022c22;
+  --success-btn-dark: #10b981;
+
+  background: var(--card-bg);
+  color: var(--card-text);
+  border: 1.5px solid var(--card-border);
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.app-card[data-theme="primary"] {
+  color-scheme: light dark;
+  --card-bg: light-dark(var(--primary-bg-light), var(--primary-bg-dark));
+  --card-text: light-dark(var(--primary-text-light), var(--primary-text-dark));
+  --card-badge-bg: light-dark(var(--primary-badge-light), var(--primary-badge-dark));
+  --card-btn-bg: light-dark(var(--primary-btn-light), var(--primary-btn-dark));
+  --card-border: light-dark(#fbcfe8, #4c0519);
+}
+
+.app-card[data-theme="accent"] {
+  color-scheme: light dark;
+  --card-bg: light-dark(var(--accent-bg-light), var(--accent-bg-dark));
+  --card-text: light-dark(var(--accent-text-light), var(--accent-text-dark));
+  --card-badge-bg: light-dark(var(--accent-badge-light), var(--accent-badge-dark));
+  --card-btn-bg: light-dark(var(--accent-btn-light), var(--accent-btn-dark));
+  --card-border: light-dark(#ddd6fe, #2e1065);
+}
+
+.app-card[data-theme="success"] {
+  color-scheme: light dark;
+  --card-bg: light-dark(var(--success-bg-light), var(--success-bg-dark));
+  --card-text: light-dark(var(--success-text-light), var(--success-text-dark));
+  --card-badge-bg: light-dark(var(--success-badge-light), var(--success-badge-dark));
+  --card-btn-bg: light-dark(var(--success-btn-light), var(--success-btn-dark));
+  --card-border: light-dark(#a7f3d0, #064e3b);
+}
+
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Header style */
+.app-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.app-card-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-badge-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--card-text);
+  flex-shrink: 0;
+}
+
+.app-card-header-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.app-card-header-info .title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+  color: var(--card-text);
+}
+
+.app-card-header-info .subtitle {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  margin: 2px 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--card-text);
+}
+
+.app-card-header .icon-btn {
+  background: transparent;
+  border: none;
+  color: var(--card-text);
+  opacity: 0.65;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.app-card-header .icon-btn:hover {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.06);
+}
+
+/* Body style */
+.app-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.app-card-body .badge {
+  align-self: flex-start;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: var(--card-badge-bg);
+  color: var(--card-text);
+}
+
+.app-card-body .text {
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin: 0;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: var(--card-text);
+}
+
+/* Footer style */
+.app-card-footer {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.app-card-footer button {
+  flex: 1;
+  min-width: 80px;
+  padding: 8px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.app-card-footer .btn-secondary {
+  background: transparent;
+  border: 1.5px solid var(--card-text);
+  color: var(--card-text);
+}
+
+.app-card-footer .btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.app-card-footer .btn-primary {
+  background: var(--card-btn-bg);
+  border: 1.5px solid var(--card-btn-bg);
+  color: contrast-color(var(--card-btn-bg) max); /* Modern CSS feature */
+  color: #ffffff; /* Fallback for browsers that do not support contrast-color */
+}
+
+.app-card-footer .btn-primary:hover {
+  filter: brightness(0.9);
+}
+
+/* Responsive adjust using container queries */
+@container (max-width: 250px) {
+  .app-card {
+    padding: 12px;
+  }
+  .app-card-footer {
+    flex-direction: column;
+  }
+  .app-card-footer button {
+    width: 100%;
+  }
+}
+

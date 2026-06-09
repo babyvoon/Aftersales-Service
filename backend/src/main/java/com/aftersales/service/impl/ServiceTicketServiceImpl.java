@@ -38,6 +38,7 @@ public class ServiceTicketServiceImpl implements ServiceTicketService {
     private final UserRepository userRepository;
     private final SparePartRepository sparePartRepository;
     private final TicketItemRepository ticketItemRepository;
+    private final CustomerRepository customerRepository;
 
     // ===================================================================
     //  CRUD Operations
@@ -45,11 +46,37 @@ public class ServiceTicketServiceImpl implements ServiceTicketService {
 
     @Override
     public ServiceTicketResponse createTicket(CreateTicketRequest request) {
-        log.info("Creating service ticket for vehicle ID: {}", request.getVehicleId());
+        log.info("Creating service ticket. Request vehicleId={}, licensePlate={}", request.getVehicleId(), request.getLicensePlate());
 
-        // 1. Validate that the vehicle exists
-        Vehicle vehicle = vehicleRepository.findById(request.getVehicleId())
-                .orElseThrow(() -> new ResourceNotFoundException("Vehicle", request.getVehicleId()));
+        // 1. Get or dynamically create vehicle
+        Vehicle vehicle;
+        if (request.getVehicleId() != null && request.getVehicleId() > 0) {
+            vehicle = vehicleRepository.findById(request.getVehicleId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Vehicle", request.getVehicleId()));
+        } else {
+            String plate = request.getLicensePlate() != null ? request.getLicensePlate().toUpperCase() : "UNKNOWN";
+            vehicle = vehicleRepository.findByLicensePlate(plate).orElse(null);
+            
+            if (vehicle == null) {
+                // Create customer
+                Customer customer = Customer.builder()
+                        .fullName(request.getCustomerName() != null ? request.getCustomerName() : "Unknown Customer")
+                        .phoneNumber(request.getCustomerPhone() != null ? request.getCustomerPhone() : "000-000-0000")
+                        .build();
+                customer = customerRepository.save(customer);
+
+                // Create vehicle
+                vehicle = Vehicle.builder()
+                        .customer(customer)
+                        .licensePlate(plate)
+                        .vinNumber("VIN-" + System.currentTimeMillis() + "-" + (int)(Math.random() * 1000))
+                        .brand(request.getVehicleBrand() != null ? request.getVehicleBrand() : "Unknown")
+                        .model(request.getVehicleModel() != null ? request.getVehicleModel() : "Unknown")
+                        .year(request.getVehicleYear() != null ? request.getVehicleYear() : 2020)
+                        .build();
+                vehicle = vehicleRepository.save(vehicle);
+            }
+        }
 
         // 2. Build the ticket entity
         BigDecimal laborCost = request.getLaborCost() != null

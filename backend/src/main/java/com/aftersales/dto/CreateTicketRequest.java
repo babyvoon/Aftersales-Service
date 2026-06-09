@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 @Builder
 public class CreateTicketRequest {
 
-    @NotNull(message = "Vehicle ID is required")
     private Long vehicleId;
 
     private Long mechanicId;
@@ -28,4 +27,11 @@ public class CreateTicketRequest {
     @DecimalMin(value = "0.00", message = "Labor cost must be non-negative")
     @Builder.Default
     private BigDecimal laborCost = BigDecimal.ZERO;
+
+    private String customerName;
+    private String customerPhone;
+    private String licensePlate;
+    private String vehicleBrand;
+    private String vehicleModel;
+    private Integer vehicleYear;
 }
