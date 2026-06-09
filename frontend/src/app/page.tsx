@@ -4,7 +4,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   Users, Shield, Hammer, Clipboard, Play, 
-  DollarSign, Package, Plus, Filter, LogOut, Globe, X, Sun, Moon,
+  Coins, Package, Plus, Filter, LogOut, Globe, X, Sun, Moon,
   FileSpreadsheet
 } from 'lucide-react';
 import KanbanBoard from '../components/KanbanBoard';
@@ -779,7 +779,7 @@ export default function Page() {
               <p className="text-[10px] text-slate-500 dark:text-slate-400">{t.sumSettled}</p>
             </div>
             <div className="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition duration-200">
-              <DollarSign className="h-5 w-5" />
+              <Coins className="h-5 w-5" />
             </div>
           </div>
 

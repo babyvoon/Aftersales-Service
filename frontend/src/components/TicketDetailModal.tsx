@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, User, Car, FileText, Wrench, Plus, Trash2, 
-  DollarSign, Calendar, AlertCircle, Printer, Check 
+  Coins, Calendar, AlertCircle, Printer, Check 
 } from 'lucide-react';
 import { ServiceTicket, User as SystemUser, SparePart, TicketItem, UserRole } from '../types';
 
@@ -373,7 +373,7 @@ export default function TicketDetailModal({
 
                 <div>
                   <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-550">
-                    <DollarSign className="h-3.5 w-3.5" />
+                    <Coins className="h-3.5 w-3.5" />
                     {t.laborCost}
                   </label>
                   <input
