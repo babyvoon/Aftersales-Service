@@ -27,18 +27,28 @@ public class DatabaseSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
         log.info("Running database seeder validation...");
 
-        // Force update all existing vehicles' brands to Isuzu
+        // Force update all existing vehicles' brands and models to Isuzu
         try {
             List<Vehicle> allVehicles = vehicleRepository.findAll();
             for (Vehicle v : allVehicles) {
+                boolean modified = false;
                 if (!"Isuzu".equalsIgnoreCase(v.getBrand())) {
                     v.setBrand("Isuzu");
+                    modified = true;
+                }
+                String currentModel = v.getModel();
+                String newModel = mapToIsuzuModel(currentModel);
+                if (!currentModel.equalsIgnoreCase(newModel)) {
+                    v.setModel(newModel);
+                    modified = true;
+                }
+                if (modified) {
                     vehicleRepository.save(v);
-                    log.info("Updated vehicle brand to Isuzu for plate: {}", v.getLicensePlate());
+                    log.info("Updated vehicle brand/model to Isuzu {} for plate: {}", v.getModel(), v.getLicensePlate());
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to force update vehicle brands to Isuzu: ", e);
+            log.error("Failed to force update vehicle brands/models to Isuzu: ", e);
         }
 
         // 1. Seed Users (Mechanics, Advisors, Admins)
@@ -76,19 +86,19 @@ public class DatabaseSeeder implements CommandLineRunner {
             Customer c12 = getOrCreateCustomer("Loki Laufeyson", "+1-555-0866", "loki@example.com", "Asgard");
 
             // Seed Vehicles
-            Vehicle v1 = getOrCreateVehicle(c1, "ABC-1234", "VIN10000000000001", "Isuzu", "Camry", 2020);
-            Vehicle v2 = getOrCreateVehicle(c2, "XYZ-9876", "VIN10000000000002", "Isuzu", "Civic", 2018);
-            Vehicle v3 = getOrCreateVehicle(c3, "BAT-1100", "VIN10000000000003", "Isuzu", "Explorer", 2017);
-            Vehicle v4 = getOrCreateVehicle(c4, "ENG-5544", "VIN10000000000004", "Isuzu", "330i", 2021);
-            Vehicle v5 = getOrCreateVehicle(c5, "WIP-3322", "VIN10000000000005", "Isuzu", "CX-5", 2019);
-            Vehicle v6 = getOrCreateVehicle(c6, "SPIDER-1", "VIN10000000000006", "Isuzu", "Corolla", 2015);
-            Vehicle v7 = getOrCreateVehicle(c7, "SUPER-99", "VIN10000000000007", "Isuzu", "Corvette", 2022);
-            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Isuzu", "Wrangler", 2016);
-            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Isuzu", "R8", 2020);
-            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Isuzu", "Model S", 2023);
-            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Isuzu", "911", 2021);
-            Vehicle v12 = getOrCreateVehicle(c11, "WITCH-7", "VIN10000000000012", "Isuzu", "XC90", 2019);
-            Vehicle v13 = getOrCreateVehicle(c12, "MISCHIEF", "VIN10000000000013", "Isuzu", "Charger", 2018);
+            Vehicle v1 = getOrCreateVehicle(c1, "ABC-1234", "VIN10000000000001", "Isuzu", "D-Max", 2020);
+            Vehicle v2 = getOrCreateVehicle(c2, "XYZ-9876", "VIN10000000000002", "Isuzu", "MU-X", 2018);
+            Vehicle v3 = getOrCreateVehicle(c3, "BAT-1100", "VIN10000000000003", "Isuzu", "MU-7", 2017);
+            Vehicle v4 = getOrCreateVehicle(c4, "ENG-5544", "VIN10000000000004", "Isuzu", "D-Max Spark", 2021);
+            Vehicle v5 = getOrCreateVehicle(c5, "WIP-3322", "VIN10000000000005", "Isuzu", "MU-X Onyx", 2019);
+            Vehicle v6 = getOrCreateVehicle(c6, "SPIDER-1", "VIN10000000000006", "Isuzu", "D-Max Cab4", 2015);
+            Vehicle v7 = getOrCreateVehicle(c7, "SUPER-99", "VIN10000000000007", "Isuzu", "Trooper", 2022);
+            Vehicle v8 = getOrCreateVehicle(c8, "CAP-1941", "VIN10000000000008", "Isuzu", "MU-X Ultimate", 2016);
+            Vehicle v9 = getOrCreateVehicle(c8, "STARK-4", "VIN10000000000009", "Isuzu", "D-Max V-Cross", 2020);
+            Vehicle v10 = getOrCreateVehicle(c9, "GREEN-8", "VIN10000000000010", "Isuzu", "Elf", 2023);
+            Vehicle v11 = getOrCreateVehicle(c10, "BLACK-W", "VIN10000000000011", "Isuzu", "Rodeo", 2021);
+            Vehicle v12 = getOrCreateVehicle(c11, "WITCH-7", "VIN10000000000012", "Isuzu", "Trooper SE", 2019);
+            Vehicle v13 = getOrCreateVehicle(c12, "MISCHIEF", "VIN10000000000013", "Isuzu", "D-Max Hi-Lander", 2018);
 
             // Seed Tickets
             ServiceTicket t1 = ServiceTicket.builder()
@@ -280,8 +290,16 @@ public class DatabaseSeeder implements CommandLineRunner {
     private Vehicle getOrCreateVehicle(Customer customer, String licensePlate, String vinNumber, String brand, String model, int year) {
         Vehicle vehicle = vehicleRepository.findByLicensePlate(licensePlate).orElse(null);
         if (vehicle != null) {
+            boolean modified = false;
             if (!vehicle.getBrand().equalsIgnoreCase(brand)) {
                 vehicle.setBrand(brand);
+                modified = true;
+            }
+            if (!vehicle.getModel().equalsIgnoreCase(model)) {
+                vehicle.setModel(model);
+                modified = true;
+            }
+            if (modified) {
                 vehicleRepository.save(vehicle);
             }
             return vehicle;
@@ -296,5 +314,25 @@ public class DatabaseSeeder implements CommandLineRunner {
                         .year(year)
                         .build()
         );
+    }
+
+    private String mapToIsuzuModel(String currentModel) {
+        if (currentModel == null) return "D-Max";
+        return switch (currentModel.trim().toLowerCase()) {
+            case "camry" -> "D-Max";
+            case "civic" -> "MU-X";
+            case "explorer" -> "MU-7";
+            case "330i" -> "D-Max Spark";
+            case "cx-5" -> "MU-X Onyx";
+            case "corolla" -> "D-Max Cab4";
+            case "corvette" -> "Trooper";
+            case "wrangler" -> "MU-X Ultimate";
+            case "r8" -> "D-Max V-Cross";
+            case "model s" -> "Elf";
+            case "911" -> "Rodeo";
+            case "xc90" -> "Trooper SE";
+            case "charger" -> "D-Max Hi-Lander";
+            default -> currentModel;
+        };
     }
 }
