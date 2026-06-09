@@ -444,14 +444,17 @@ export default function Page() {
       if (res.ok) {
         const body = await res.json();
         if (body.success && body.data && body.data.length > 0) {
-          setTickets(body.data);
+          const sorted = [...body.data].sort((a, b) => b.id - a.id);
+          setTickets(sorted);
           return;
         }
       }
-      setTickets(INITIAL_TICKETS);
+      const sortedMock = [...INITIAL_TICKETS].sort((a, b) => b.id - a.id);
+      setTickets(sortedMock);
     } catch (err) {
       console.error("Error fetching tickets, using mock fallback:", err);
-      setTickets(INITIAL_TICKETS);
+      const sortedMock = [...INITIAL_TICKETS].sort((a, b) => b.id - a.id);
+      setTickets(sortedMock);
     }
   };
 
@@ -904,8 +907,11 @@ export default function Page() {
     const vat = Number((subtotal * 0.07).toFixed(2));
     const total = Number((subtotal + vat).toFixed(2));
 
+    const maxId = tickets.reduce((max, t) => t.id > max ? t.id : max, 0);
+    const nextId = maxId > 0 ? maxId + 1 : 1010;
+
     const newTicket: ServiceTicket = {
-      id: Date.now(),
+      id: nextId,
       description: newDescription,
       status: 'PENDING',
       laborCost: labor,
