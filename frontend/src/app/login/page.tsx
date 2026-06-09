@@ -103,12 +103,6 @@ export default function LoginPage() {
       </div>
       {/*ring div ends here*/}
 
-      {/* Guide details for mock roles */}
-      <div className="help-guide">
-        <p className="font-semibold text-slate-500 uppercase tracking-widest text-[10px] mb-1">Simulated User Credentials</p>
-        <p className="text-[11px] text-slate-600">Username: <strong>admin</strong> | <strong>advisor</strong> | <strong>mechanic</strong></p>
-        <p className="text-[10px] text-slate-700 italic mt-0.5">(Any password is accepted)</p>
-      </div>
     </div>
   );
 }
