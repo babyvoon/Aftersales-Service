@@ -204,19 +204,30 @@ public class ServiceTicketServiceImpl implements ServiceTicketService {
                     part.getName(), request.getQuantity(), part.getStockQuantity());
         }
 
-        // Create ticket item — subtotal is auto-calculated via @PrePersist
-        TicketItem item = TicketItem.builder()
-                .serviceTicket(ticket)
-                .sparePart(part)
-                .quantity(request.getQuantity())
-                .pricePerUnit(part.getUnitPrice())
-                .build();
+        // Check if the part already exists on the ticket
+        TicketItem existingItem = ticket.getTicketItems().stream()
+                .filter(ti -> ti.getSparePart().getId().equals(part.getId()))
+                .findFirst()
+                .orElse(null);
 
-        ticket.addTicketItem(item);
+        if (existingItem != null) {
+            existingItem.setQuantity(existingItem.getQuantity() + request.getQuantity());
+            existingItem.calculateSubtotal(); // Recalculate item subtotal
+        } else {
+            // Create ticket item
+            TicketItem item = TicketItem.builder()
+                    .serviceTicket(ticket)
+                    .sparePart(part)
+                    .quantity(request.getQuantity())
+                    .pricePerUnit(part.getUnitPrice())
+                    .build();
+            ticket.addTicketItem(item);
+        }
+
         ticket.recalculateTotal();
 
         ServiceTicket saved = ticketRepository.save(ticket);
-        log.info("Item added to ticket {}. New total: {}", ticketId, saved.getTotalCost());
+        log.info("Item added/updated on ticket {}. New total: {}", ticketId, saved.getTotalCost());
 
         return mapToResponse(saved);
     }
